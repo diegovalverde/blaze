@@ -66,7 +66,9 @@ void trmm( CBLAS_ORDER order, CBLAS_SIDE side, CBLAS_UPLO uplo,
 void trmm( CBLAS_ORDER order, CBLAS_SIDE side, CBLAS_UPLO uplo,
            CBLAS_TRANSPOSE transA, CBLAS_DIAG diag, blas_int_t m, blas_int_t n,
            double alpha, const double* A, blas_int_t lda, double* B, blas_int_t ldb );
+#endif
 
+#if BLAZE_BLAS_MODE && !ACCELERATE_NEW_LAPACK
 void trmm( CBLAS_ORDER order, CBLAS_SIDE side, CBLAS_UPLO uplo,
            CBLAS_TRANSPOSE transA, CBLAS_DIAG diag, blas_int_t m, blas_int_t n,
            complex<float> alpha, const complex<float>* A, blas_int_t lda,
@@ -157,7 +159,7 @@ inline void trmm( CBLAS_ORDER order, CBLAS_SIDE side, CBLAS_UPLO uplo,
 
 
 //*************************************************************************************************
-#if BLAZE_BLAS_MODE
+#if BLAZE_BLAS_MODE && !ACCELERATE_NEW_LAPACK
 /*!\brief BLAS kernel for a triangular dense matrix/dense matrix multiplication with single
 //        precision complex matrices (\f$ B=\alpha*A*B \f$ or \f$ B=\alpha*B*A \f$).
 // \ingroup blas
@@ -198,7 +200,7 @@ inline void trmm( CBLAS_ORDER order, CBLAS_SIDE side, CBLAS_UPLO uplo,
 
 
 //*************************************************************************************************
-#if BLAZE_BLAS_MODE
+#if BLAZE_BLAS_MODE && !ACCELERATE_NEW_LAPACK
 /*!\brief BLAS kernel for a triangular dense matrix/dense matrix multiplication with double
 //        precision complex matrices (\f$ B=\alpha*A*B \f$ or \f$ B=\alpha*B*A \f$).
 // \ingroup blas

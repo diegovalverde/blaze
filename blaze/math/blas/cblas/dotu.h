@@ -131,7 +131,7 @@ inline double dotu( blas_int_t n, const double* x, blas_int_t incX, const double
 
 
 //*************************************************************************************************
-#if BLAZE_BLAS_MODE
+#if BLAZE_BLAS_MODE && !ACCELERATE_NEW_LAPACK
 /*!\brief BLAS kernel for a dense vector dot product for single precision complex operands
 //        (\f$ s=\vec{x}*\vec{y} \f$).
 // \ingroup blas
@@ -173,7 +173,7 @@ inline complex<float> dotu( blas_int_t n, const complex<float>* x, blas_int_t in
 
 
 //*************************************************************************************************
-#if BLAZE_BLAS_MODE
+#if BLAZE_BLAS_MODE && !ACCELERATE_NEW_LAPACK
 /*!\brief BLAS kernel for a dense vector dot product for double precision complex operands
 //        (\f$ s=\vec{x}*\vec{y} \f$).
 // \ingroup blas

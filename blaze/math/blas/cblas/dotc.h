@@ -103,7 +103,7 @@ inline float dotc( blas_int_t n, const float* x, blas_int_t incX, const float* y
 
 
 //*************************************************************************************************
-#if BLAZE_BLAS_MODE
+#if BLAZE_BLAS_MODE && !ACCELERATE_NEW_LAPACK
 /*!\brief BLAS kernel for a dense vector complex conjugate dot product for double precision operands
 //        (\f$ s=\vec{x}*\vec{y} \f$).
 // \ingroup blas
@@ -131,7 +131,7 @@ inline double dotc( blas_int_t n, const double* x, blas_int_t incX, const double
 
 
 //*************************************************************************************************
-#if BLAZE_BLAS_MODE
+#if BLAZE_BLAS_MODE && !ACCELERATE_NEW_LAPACK
 /*!\brief BLAS kernel for a dense vector complex conjugate dot product for single precision
 //        complex operands (\f$ s=\vec{x}*\vec{y} \f$).
 // \ingroup blas
@@ -157,7 +157,7 @@ inline complex<float> dotc( blas_int_t n, const complex<float>* x, blas_int_t in
 
    complex<float> tmp;
 
-#ifdef OPENBLAS_VERSION
+#ifdef OPENBLAS_VERSION 
    cblas_cdotc_sub( n, reinterpret_cast<const float*>( x ), incX,
                     reinterpret_cast<const float*>( y ), incY,
                     reinterpret_cast<openblas_complex_float*>( &tmp ) );
@@ -173,7 +173,7 @@ inline complex<float> dotc( blas_int_t n, const complex<float>* x, blas_int_t in
 
 
 //*************************************************************************************************
-#if BLAZE_BLAS_MODE
+#if BLAZE_BLAS_MODE && !ACCELERATE_NEW_LAPACK
 /*!\brief BLAS kernel for a dense vector complex conjugate dot product for double precision
 //        complex operands (\f$ s=\vec{x}*\vec{y} \f$).
 // \ingroup blas

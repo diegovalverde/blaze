@@ -66,7 +66,9 @@ void trsm( CBLAS_ORDER order, CBLAS_SIDE side, CBLAS_UPLO uplo, CBLAS_TRANSPOSE 
 void trsm( CBLAS_ORDER order, CBLAS_SIDE side, CBLAS_UPLO uplo, CBLAS_TRANSPOSE transA,
            CBLAS_DIAG diag, blas_int_t m, blas_int_t n, double alpha, const double* A,
            blas_int_t lda, double* B, blas_int_t ldb );
+#endif
 
+#if BLAZE_BLAS_MODE && !ACCELERATE_NEW_LAPACK
 void trsm( CBLAS_ORDER order, CBLAS_SIDE side, CBLAS_UPLO uplo, CBLAS_TRANSPOSE transA,
            CBLAS_DIAG diag, blas_int_t m, blas_int_t n, complex<float> alpha,
            const complex<float>* A, blas_int_t lda, complex<float>* B, blas_int_t ldb );
@@ -157,7 +159,7 @@ inline void trsm( CBLAS_ORDER order, CBLAS_SIDE side, CBLAS_UPLO uplo, CBLAS_TRA
 
 
 //*************************************************************************************************
-#if BLAZE_BLAS_MODE
+#if BLAZE_BLAS_MODE && !ACCELERATE_NEW_LAPACK
 /*!\brief BLAS kernel for solving a triangular system of equations with single precision complex
 //        matrices (\f$ A*X=\alpha*B \f$ or \f$ X*A=\alpha*B \f$).
 // \ingroup blas
@@ -198,7 +200,7 @@ inline void trsm( CBLAS_ORDER order, CBLAS_SIDE side, CBLAS_UPLO uplo, CBLAS_TRA
 
 
 //*************************************************************************************************
-#if BLAZE_BLAS_MODE
+#if BLAZE_BLAS_MODE && !ACCELERATE_NEW_LAPACK
 /*!\brief BLAS kernel for solving a triangular system of equations with double precision complex
 //        matrices (\f$ A*X=\alpha*B \f$ or \f$ X*A=\alpha*B \f$).
 // \ingroup blas

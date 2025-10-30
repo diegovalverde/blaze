@@ -66,7 +66,9 @@ void trmv( CBLAS_ORDER order, CBLAS_UPLO uplo, CBLAS_TRANSPOSE transA,
 void trmv( CBLAS_ORDER order, CBLAS_UPLO uplo, CBLAS_TRANSPOSE transA,
            CBLAS_DIAG diag, blas_int_t n, const double* A, blas_int_t lda,
            double* x, blas_int_t incX );
+#endif
 
+#if BLAZE_BLAS_MODE && !ACCELERATE_NEW_LAPACK
 void trmv( CBLAS_ORDER order, CBLAS_UPLO uplo, CBLAS_TRANSPOSE transA,
            CBLAS_DIAG diag, blas_int_t n, const complex<float>* A,
            blas_int_t lda, complex<float>* x, blas_int_t incX );
@@ -149,7 +151,7 @@ inline void trmv( CBLAS_ORDER order, CBLAS_UPLO uplo, CBLAS_TRANSPOSE transA,
 
 
 //*************************************************************************************************
-#if BLAZE_BLAS_MODE
+#if BLAZE_BLAS_MODE && !ACCELERATE_NEW_LAPACK
 /*!\brief BLAS kernel for a triangular dense matrix/dense vector multiplication for single
 //        precision complex operands (\f$ \vec{x}=A*\vec{x} \f$).
 // \ingroup blas
@@ -186,7 +188,7 @@ inline void trmv( CBLAS_ORDER order, CBLAS_UPLO uplo, CBLAS_TRANSPOSE transA,
 
 
 //*************************************************************************************************
-#if BLAZE_BLAS_MODE
+#if BLAZE_BLAS_MODE && !ACCELERATE_NEW_LAPACK
 /*!\brief BLAS kernel for a triangular dense matrix/dense vector multiplication for double
 //        precision complex operands (\f$ \vec{x}=A*\vec{x} \f$).
 // \ingroup blas

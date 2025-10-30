@@ -56,7 +56,12 @@ namespace blaze {
 // \brief Complex data type of the Blaze library.
 // \ingroup util
 */
+#if BLAZE_BLAS_IS_64BIT && ACCELERATE_NEW_LAPACK && ACCELERATE_LAPACK_ILP64
+#warning "Using apple accelerate disabled Complex number support"
 using std::complex;
+ #else
+using std::complex;
+#endif
 //*************************************************************************************************
 
 } // namespace blaze

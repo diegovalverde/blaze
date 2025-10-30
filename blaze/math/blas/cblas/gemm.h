@@ -68,7 +68,9 @@ void gemm( CBLAS_ORDER order, CBLAS_TRANSPOSE transA, CBLAS_TRANSPOSE transB,
            blas_int_t m, blas_int_t n, blas_int_t k, double alpha, const double* A,
            blas_int_t lda, const double* B, blas_int_t ldb, double beta, float* C,
            blas_int_t ldc );
+#endif
 
+#if BLAZE_BLAS_MODE && !ACCELERATE_NEW_LAPACK
 void gemm( CBLAS_ORDER order, CBLAS_TRANSPOSE transA, CBLAS_TRANSPOSE transB,
            blas_int_t m, blas_int_t n, blas_int_t k, complex<float> alpha,
            const complex<float>* A, blas_int_t lda, const complex<float>* B,
@@ -165,7 +167,7 @@ inline void gemm( CBLAS_ORDER order, CBLAS_TRANSPOSE transA, CBLAS_TRANSPOSE tra
 
 
 //*************************************************************************************************
-#if BLAZE_BLAS_MODE
+#if BLAZE_BLAS_MODE && !ACCELERATE_NEW_LAPACK
 /*!\brief BLAS kernel for a dense matrix/dense matrix multiplication with single precision
 //        matrices (\f$ C=\alpha*A*B+\beta*C \f$).
 // \ingroup blas
@@ -209,7 +211,7 @@ inline void gemm( CBLAS_ORDER order, CBLAS_TRANSPOSE transA, CBLAS_TRANSPOSE tra
 
 
 //*************************************************************************************************
-#if BLAZE_BLAS_MODE
+#if BLAZE_BLAS_MODE && !ACCELERATE_NEW_LAPACK
 /*!\brief BLAS kernel for a dense matrix/dense matrix multiplication with double precision
 //        matrices (\f$ C=\alpha*A*B+\beta*C \f$).
 // \ingroup blas
