@@ -54,7 +54,7 @@
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-#if !defined(INTEL_MKL_VERSION)
+#if !defined(INTEL_MKL_VERSION)  && !defined(ACCELERATE_NEW_LAPACK)
 extern "C" {
 
 void cunmlq_( char* side, char* trans, blaze::blas_int_t* m, blaze::blas_int_t* n,
@@ -85,6 +85,8 @@ namespace blaze {
 //*************************************************************************************************
 /*!\name LAPACK functions to multiply Q from a LQ decomposition with a matrix (unmlq) */
 //@{
+#ifndef ACCELERATE_NEW_LAPACK
+
 void unmlq( char side, char trans, blas_int_t m, blas_int_t n,
             blas_int_t k, const complex<float>* A, blas_int_t lda,
             const complex<float>* tau, complex<float>* C, blas_int_t ldc,
@@ -94,6 +96,8 @@ void unmlq( char side, char trans, blas_int_t m, blas_int_t n,
             blas_int_t k, const complex<double>* A, blas_int_t lda,
             const complex<double>* tau, complex<double>* C, blas_int_t ldc,
             complex<double>* work, blas_int_t lwork, blas_int_t* info );
+
+#endif
 //@}
 //*************************************************************************************************
 
@@ -145,6 +149,8 @@ void unmlq( char side, char trans, blas_int_t m, blas_int_t n,
 // is available and linked to the executable. Otherwise a call to this function will result in a
 // linker error.
 */
+#ifndef ACCELERATE_NEW_LAPACK
+
 inline void unmlq( char side, char trans, blas_int_t m, blas_int_t n,
                    blas_int_t k, const complex<float>* A, blas_int_t lda,
                    const complex<float>* tau, complex<float>* C, blas_int_t ldc,
@@ -170,6 +176,7 @@ inline void unmlq( char side, char trans, blas_int_t m, blas_int_t n,
 #endif
           );
 }
+#endif
 //*************************************************************************************************
 
 
@@ -220,6 +227,8 @@ inline void unmlq( char side, char trans, blas_int_t m, blas_int_t n,
 // is available and linked to the executable. Otherwise a call to this function will result in a
 // linker error.
 */
+#ifndef ACCELERATE_NEW_LAPACK
+
 inline void unmlq( char side, char trans, blas_int_t m, blas_int_t n,
                    blas_int_t k, const complex<double>* A, blas_int_t lda,
                    const complex<double>* tau, complex<double>* C, blas_int_t ldc,
@@ -245,6 +254,7 @@ inline void unmlq( char side, char trans, blas_int_t m, blas_int_t n,
 #endif
           );
 }
+#endif
 //*************************************************************************************************
 
 } // namespace blaze

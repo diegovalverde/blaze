@@ -54,7 +54,7 @@
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-#if !defined(INTEL_MKL_VERSION)
+#if !defined(INTEL_MKL_VERSION)  && !defined(ACCELERATE_NEW_LAPACK)
 extern "C" {
 
 void sgesdd_( char* jobz, blaze::blas_int_t* m, blaze::blas_int_t* n, float* A,
@@ -105,6 +105,7 @@ void gesdd( char jobz, blas_int_t m, blas_int_t n, double* A, blas_int_t lda,
             double* s, double* U, blas_int_t ldu, double* V, blas_int_t ldv,
             double* work, blas_int_t lwork, blas_int_t* iwork, blas_int_t* info );
 
+#ifndef ACCELERATE_NEW_LAPACK
 void gesdd( char jobz, blas_int_t m, blas_int_t n, complex<float>* A, blas_int_t lda,
             float* s, complex<float>* U, blas_int_t ldu, complex<float>* V, blas_int_t ldv,
             complex<float>* work, blas_int_t lwork, float* rwork, blas_int_t* iwork,
@@ -114,6 +115,7 @@ void gesdd( char jobz, blas_int_t m, blas_int_t n, complex<double>* A, blas_int_
             double* s, complex<double>* U, blas_int_t ldu, complex<double>* V, blas_int_t ldv,
             complex<double>* work, blas_int_t lwork, double* rwork, blas_int_t* iwork,
             blas_int_t* info );
+#endif
 //@}
 //*************************************************************************************************
 
@@ -191,7 +193,7 @@ inline void gesdd( char jobz, blas_int_t m, blas_int_t n, float* A, blas_int_t l
 #endif
 
    sgesdd_( &jobz, &m, &n, A, &lda, s, U, &ldu, V, &ldv, work, &lwork, iwork, info
-#if !defined(INTEL_MKL_VERSION)
+#if !defined(INTEL_MKL_VERSION)  && !defined(ACCELERATE_NEW_LAPACK)
           , blaze::fortran_charlen_t(1)
 #endif
           );
@@ -272,7 +274,7 @@ inline void gesdd( char jobz, blas_int_t m, blas_int_t n, double* A, blas_int_t 
 #endif
 
    dgesdd_( &jobz, &m, &n, A, &lda, s, U, &ldu, V, &ldv, work, &lwork, iwork, info
-#if !defined(INTEL_MKL_VERSION)
+#if !defined(INTEL_MKL_VERSION)  && !defined(ACCELERATE_NEW_LAPACK)
           , blaze::fortran_charlen_t(1)
 #endif
           );
@@ -345,6 +347,7 @@ inline void gesdd( char jobz, blas_int_t m, blas_int_t n, double* A, blas_int_t 
 // is available and linked to the executable. Otherwise a call to this function will result in a
 // linker error.
 */
+#ifndef ACCELERATE_NEW_LAPACK
 inline void gesdd( char jobz, blas_int_t m, blas_int_t n, complex<float>* A, blas_int_t lda,
                    float* s, complex<float>* U, blas_int_t ldu, complex<float>* V, blas_int_t ldv,
                    complex<float>* work, blas_int_t lwork, float* rwork, blas_int_t* iwork,
@@ -363,11 +366,12 @@ inline void gesdd( char jobz, blas_int_t m, blas_int_t n, complex<float>* A, bla
    cgesdd_( &jobz, &m, &n, reinterpret_cast<ET*>( A ), &lda, s,
             reinterpret_cast<ET*>( U ), &ldu, reinterpret_cast<ET*>( V ), &ldv,
             reinterpret_cast<ET*>( work ), &lwork, rwork, iwork, info
-#if !defined(INTEL_MKL_VERSION)
+#if !defined(INTEL_MKL_VERSION)  && !defined(ACCELERATE_NEW_LAPACK)
           , blaze::fortran_charlen_t(1)
 #endif
           );
 }
+#endif
 //*************************************************************************************************
 
 
@@ -436,6 +440,7 @@ inline void gesdd( char jobz, blas_int_t m, blas_int_t n, complex<float>* A, bla
 // is available and linked to the executable. Otherwise a call to this function will result in a
 // linker error.
 */
+#ifndef ACCELERATE_NEW_LAPACK
 inline void gesdd( char jobz, blas_int_t m, blas_int_t n, complex<double>* A, blas_int_t lda,
                    double* s, complex<double>* U, blas_int_t ldu, complex<double>* V, blas_int_t ldv,
                    complex<double>* work, blas_int_t lwork, double* rwork, blas_int_t* iwork,
@@ -454,11 +459,12 @@ inline void gesdd( char jobz, blas_int_t m, blas_int_t n, complex<double>* A, bl
    zgesdd_( &jobz, &m, &n, reinterpret_cast<ET*>( A ), &lda, s,
             reinterpret_cast<ET*>( U ), &ldu, reinterpret_cast<ET*>( V ), &ldv,
             reinterpret_cast<ET*>( work ), &lwork, rwork, iwork, info
-#if !defined(INTEL_MKL_VERSION)
+#if !defined(INTEL_MKL_VERSION)  && !defined(ACCELERATE_NEW_LAPACK)
           , blaze::fortran_charlen_t(1)
 #endif
           );
 }
+#endif
 //*************************************************************************************************
 
 } // namespace blaze

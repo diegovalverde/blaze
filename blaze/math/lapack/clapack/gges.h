@@ -54,7 +54,7 @@
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-#if !defined(INTEL_MKL_VERSION)
+#if !defined(INTEL_MKL_VERSION) && !defined(ACCELERATE_NEW_LAPACK)
 extern "C" {
 
 void sgges_( char* jobvsl, char* jobvsr, char* sort,
@@ -125,6 +125,7 @@ void gges( char jobvsl, char jobvsr, char sort,
            blas_int_t ldvsr, double* work, blas_int_t lwork,
            blas_int_t* bwork, blas_int_t* info );
 
+#ifndef ACCELERATE_NEW_LAPACK
 void gges( char jobvsl, char jobvsr, char sort,
            blas_int_t (*selctg)( const complex<float>*, const complex<float>* ), blas_int_t n,
            complex<float>* A, blas_int_t lda, complex<float>* B, blas_int_t ldb,
@@ -140,6 +141,7 @@ void gges( char jobvsl, char jobvsr, char sort,
            complex<double>* VSL, blas_int_t ldvsl, complex<double>* VSR,
            blas_int_t ldvsr, complex<double>* work, blas_int_t lwork,
            double* rwork, blas_int_t* bwork, blas_int_t* info );
+#endif
 //@}
 //*************************************************************************************************
 
@@ -224,6 +226,7 @@ void gges( char jobvsl, char jobvsr, char sort,
 // is available and linked to the executable. Otherwise a call to this function will result in a
 // linker error.
 */
+#ifndef ACCELERATE_NEW_LAPACK
 inline void gges( char jobvsl, char jobvsr, char sort,
                   blas_int_t (*selctg)( const float*, const float*, const float* ), blas_int_t n,
                   float* A, blas_int_t lda, float* B, blas_int_t ldb,
@@ -232,17 +235,18 @@ inline void gges( char jobvsl, char jobvsr, char sort,
                   blas_int_t ldvsr, float* work, blas_int_t lwork,
                   blas_int_t* bwork, blas_int_t* info )
 {
-#if defined(INTEL_MKL_VERSION)
+#if defined(INTEL_MKL_VERSION) && !defined(ACCELERATE_NEW_LAPACK)
    BLAZE_STATIC_ASSERT( sizeof( MKL_INT ) == sizeof( blas_int_t ) );
 #endif
 
    sgges_( &jobvsl, &jobvsr, &sort, selctg, &n, A, &lda, B, &ldb, sdim, alphar, alphai, beta,
            VSL, &ldvsl, VSR, &ldvsr, work, &lwork, bwork, info
-#if !defined(INTEL_MKL_VERSION)
+#if !defined(INTEL_MKL_VERSION) && !defined(ACCELERATE_NEW_LAPACK)
          , blaze::fortran_charlen_t(1), blaze::fortran_charlen_t(1), blaze::fortran_charlen_t(1)
 #endif
          );
 }
+#endif
 //*************************************************************************************************
 
 
@@ -326,6 +330,7 @@ inline void gges( char jobvsl, char jobvsr, char sort,
 // is available and linked to the executable. Otherwise a call to this function will result in a
 // linker error.
 */
+#ifndef ACCELERATE_NEW_LAPACK
 inline void gges( char jobvsl, char jobvsr, char sort,
                   blas_int_t (*selctg)( const double*, const double*, const double* ), blas_int_t n,
                   double* A, blas_int_t lda, double* B, blas_int_t ldb,
@@ -334,17 +339,18 @@ inline void gges( char jobvsl, char jobvsr, char sort,
                   blas_int_t ldvsr, double* work, blas_int_t lwork,
                   blas_int_t* bwork, blas_int_t* info )
 {
-#if defined(INTEL_MKL_VERSION)
+#if defined(INTEL_MKL_VERSION) && !defined(ACCELERATE_NEW_LAPACK)
    BLAZE_STATIC_ASSERT( sizeof( MKL_INT ) == sizeof( blas_int_t ) );
 #endif
 
    dgges_( &jobvsl, &jobvsr, &sort, selctg, &n, A, &lda, B, &ldb, sdim, alphar, alphai, beta,
            VSL, &ldvsl, VSR, &ldvsr, work, &lwork, bwork, info
-#if !defined(INTEL_MKL_VERSION)
+#if !defined(INTEL_MKL_VERSION) && !defined(ACCELERATE_NEW_LAPACK)
          , blaze::fortran_charlen_t(1), blaze::fortran_charlen_t(1), blaze::fortran_charlen_t(1)
 #endif
          );
 }
+#endif
 //*************************************************************************************************
 
 
@@ -428,6 +434,7 @@ inline void gges( char jobvsl, char jobvsr, char sort,
 // is available and linked to the executable. Otherwise a call to this function will result in a
 // linker error.
 */
+#ifndef ACCELERATE_NEW_LAPACK
 inline void gges( char jobvsl, char jobvsr, char sort,
                   blas_int_t (*selctg)( const complex<float>*, const complex<float>* ), blas_int_t n,
                   complex<float>* A, blas_int_t lda, complex<float>* B, blas_int_t ldb,
@@ -438,7 +445,7 @@ inline void gges( char jobvsl, char jobvsr, char sort,
 {
    BLAZE_STATIC_ASSERT( sizeof( complex<float> ) == 2UL*sizeof( float ) );
 
-#if defined(INTEL_MKL_VERSION)
+#if defined(INTEL_MKL_VERSION) && !defined(ACCELERATE_NEW_LAPACK)
    BLAZE_STATIC_ASSERT( sizeof( MKL_INT ) == sizeof( blas_int_t ) );
    BLAZE_STATIC_ASSERT( sizeof( MKL_Complex8 ) == sizeof( complex<float> ) );
    using ET = MKL_Complex8;
@@ -453,11 +460,12 @@ inline void gges( char jobvsl, char jobvsr, char sort,
            reinterpret_cast<ET*>( alpha ), reinterpret_cast<ET*>( beta ),
            reinterpret_cast<ET*>( VSL ), &ldvsl, reinterpret_cast<ET*>( VSR ), &ldvsr,
            reinterpret_cast<ET*>( work ), &lwork, rwork, bwork, info
-#if !defined(INTEL_MKL_VERSION)
+#if !defined(INTEL_MKL_VERSION) && !defined(ACCELERATE_NEW_LAPACK)
          , blaze::fortran_charlen_t(1), blaze::fortran_charlen_t(1), blaze::fortran_charlen_t(1)
 #endif
          );
 }
+#endif
 //*************************************************************************************************
 
 
@@ -541,6 +549,7 @@ inline void gges( char jobvsl, char jobvsr, char sort,
 // is available and linked to the executable. Otherwise a call to this function will result in a
 // linker error.
 */
+#ifndef ACCELERATE_NEW_LAPACK
 inline void gges( char jobvsl, char jobvsr, char sort,
                   blas_int_t (*selctg)( const complex<double>*, const complex<double>* ), blas_int_t n,
                   complex<double>* A, blas_int_t lda, complex<double>* B, blas_int_t ldb,
@@ -551,7 +560,7 @@ inline void gges( char jobvsl, char jobvsr, char sort,
 {
    BLAZE_STATIC_ASSERT( sizeof( complex<double> ) == 2UL*sizeof( double ) );
 
-#if defined(INTEL_MKL_VERSION)
+#if defined(INTEL_MKL_VERSION) && !defined(ACCELERATE_NEW_LAPACK)
    BLAZE_STATIC_ASSERT( sizeof( MKL_INT ) == sizeof( blas_int_t ) );
    BLAZE_STATIC_ASSERT( sizeof( MKL_Complex16 ) == sizeof( complex<double> ) );
    using ET = MKL_Complex16;
@@ -566,11 +575,12 @@ inline void gges( char jobvsl, char jobvsr, char sort,
            reinterpret_cast<ET*>( alpha ), reinterpret_cast<ET*>( beta ),
            reinterpret_cast<ET*>( VSL ), &ldvsl, reinterpret_cast<ET*>( VSR ), &ldvsr,
            reinterpret_cast<ET*>( work ), &lwork, rwork, bwork, info
-#if !defined(INTEL_MKL_VERSION)
+#if !defined(INTEL_MKL_VERSION) && !defined(ACCELERATE_NEW_LAPACK)
          , blaze::fortran_charlen_t(1), blaze::fortran_charlen_t(1), blaze::fortran_charlen_t(1)
 #endif
          );
 }
+#endif
 //*************************************************************************************************
 
 } // namespace blaze

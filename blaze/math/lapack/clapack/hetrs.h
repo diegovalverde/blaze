@@ -54,7 +54,7 @@
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-#if !defined(INTEL_MKL_VERSION)
+#if !defined(INTEL_MKL_VERSION) && !defined(ACCELERATE_NEW_LAPACK)
 extern "C" {
 
 void chetrs_( char* uplo, blaze::blas_int_t* n, blaze::blas_int_t* nrhs, float* A,
@@ -83,6 +83,8 @@ namespace blaze {
 //*************************************************************************************************
 /*!\name LAPACK LDLH-based substitution functions (hetrs) */
 //@{
+#ifndef ACCELERATE_NEW_LAPACK
+
 void hetrs( char uplo, blas_int_t n, blas_int_t nrhs, const complex<float>* A,
             blas_int_t lda, const blas_int_t* ipiv, complex<float>* B,
             blas_int_t ldb, blas_int_t* info );
@@ -90,6 +92,8 @@ void hetrs( char uplo, blas_int_t n, blas_int_t nrhs, const complex<float>* A,
 void hetrs( char uplo, blas_int_t n, blas_int_t nrhs, const complex<double>* A,
             blas_int_t lda, const blas_int_t* ipiv, complex<double>* B,
             blas_int_t ldb, blas_int_t* info );
+
+#endif
 //@}
 //*************************************************************************************************
 
@@ -128,13 +132,15 @@ void hetrs( char uplo, blas_int_t n, blas_int_t nrhs, const complex<double>* A,
 // is available and linked to the executable. Otherwise a call to this function will result in a
 // linker error.
 */
+#ifndef ACCELERATE_NEW_LAPACK
+
 inline void hetrs( char uplo, blas_int_t n, blas_int_t nrhs, const complex<float>* A,
                    blas_int_t lda, const blas_int_t* ipiv, complex<float>* B,
                    blas_int_t ldb, blas_int_t* info )
 {
    BLAZE_STATIC_ASSERT( sizeof( complex<float> ) == 2UL*sizeof( float ) );
 
-#if defined(INTEL_MKL_VERSION)
+#if defined(INTEL_MKL_VERSION) && !defined(ACCELERATE_NEW_LAPACK)
    BLAZE_STATIC_ASSERT( sizeof( MKL_INT ) == sizeof( blas_int_t ) );
    BLAZE_STATIC_ASSERT( sizeof( MKL_Complex8 ) == sizeof( complex<float> ) );
    using ET = MKL_Complex8;
@@ -144,11 +150,12 @@ inline void hetrs( char uplo, blas_int_t n, blas_int_t nrhs, const complex<float
 
    chetrs_( &uplo, &n, &nrhs, const_cast<ET*>( reinterpret_cast<const ET*>( A ) ),
             &lda, const_cast<blas_int_t*>( ipiv ), reinterpret_cast<ET*>( B ), &ldb, info
-#if !defined(INTEL_MKL_VERSION)
+#if !defined(INTEL_MKL_VERSION) && !defined(ACCELERATE_NEW_LAPACK)
           , blaze::fortran_charlen_t(1)
 #endif
           );
 }
+#endif
 //*************************************************************************************************
 
 
@@ -186,13 +193,14 @@ inline void hetrs( char uplo, blas_int_t n, blas_int_t nrhs, const complex<float
 // is available and linked to the executable. Otherwise a call to this function will result in a
 // linker error.
 */
+#ifndef ACCELERATE_NEW_LAPACK
 inline void hetrs( char uplo, blas_int_t n, blas_int_t nrhs, const complex<double>* A,
                    blas_int_t lda, const blas_int_t* ipiv, complex<double>* B,
                    blas_int_t ldb, blas_int_t* info )
 {
    BLAZE_STATIC_ASSERT( sizeof( complex<double> ) == 2UL*sizeof( double ) );
 
-#if defined(INTEL_MKL_VERSION)
+#if defined(INTEL_MKL_VERSION) && !defined(ACCELERATE_NEW_LAPACK)
    BLAZE_STATIC_ASSERT( sizeof( MKL_INT ) == sizeof( blas_int_t ) );
    BLAZE_STATIC_ASSERT( sizeof( MKL_Complex16 ) == sizeof( complex<double> ) );
    using ET = MKL_Complex16;
@@ -202,11 +210,12 @@ inline void hetrs( char uplo, blas_int_t n, blas_int_t nrhs, const complex<doubl
 
    zhetrs_( &uplo, &n, &nrhs, const_cast<ET*>( reinterpret_cast<const ET*>( A ) ),
             &lda, const_cast<blas_int_t*>( ipiv ), reinterpret_cast<ET*>( B ), &ldb, info
-#if !defined(INTEL_MKL_VERSION)
+#if !defined(INTEL_MKL_VERSION) && !defined(ACCELERATE_NEW_LAPACK)
           , blaze::fortran_charlen_t(1)
 #endif
           );
 }
+#endif
 //*************************************************************************************************
 
 } // namespace blaze

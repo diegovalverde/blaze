@@ -53,7 +53,7 @@
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-#if !defined(INTEL_MKL_VERSION)
+#if !defined(INTEL_MKL_VERSION) && !defined(ACCELERATE_NEW_LAPACK)
 extern "C" {
 
 void sorgrq_( blaze::blas_int_t* m, blaze::blas_int_t* n, blaze::blas_int_t* k, float* A,
@@ -125,7 +125,7 @@ void orgrq( blas_int_t m, blas_int_t n, blas_int_t k, double* A, blas_int_t lda,
 inline void orgrq( blas_int_t m, blas_int_t n, blas_int_t k, float* A, blas_int_t lda,
                    const float* tau, float* work, blas_int_t lwork, blas_int_t* info )
 {
-#if defined(INTEL_MKL_VERSION)
+#if defined(INTEL_MKL_VERSION) && !defined(ACCELERATE_NEW_LAPACK)
    BLAZE_STATIC_ASSERT( sizeof( MKL_INT ) == sizeof( blas_int_t ) );
 #endif
 
@@ -168,7 +168,7 @@ inline void orgrq( blas_int_t m, blas_int_t n, blas_int_t k, float* A, blas_int_
 inline void orgrq( blas_int_t m, blas_int_t n, blas_int_t k, double* A, blas_int_t lda,
                    const double* tau, double* work, blas_int_t lwork, blas_int_t* info )
 {
-#if defined(INTEL_MKL_VERSION)
+#if defined(INTEL_MKL_VERSION) && !defined(ACCELERATE_NEW_LAPACK)
    BLAZE_STATIC_ASSERT( sizeof( MKL_INT ) == sizeof( blas_int_t ) );
 #endif
 

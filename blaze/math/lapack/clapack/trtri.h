@@ -54,7 +54,7 @@
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-#if !defined(INTEL_MKL_VERSION) && !defined(BLAS_H)
+#if !defined(INTEL_MKL_VERSION) && !defined(BLAS_H) && !defined(ACCELERATE_NEW_LAPACK)
 extern "C" {
 
 void strtri_( char* uplo, char* diag, blaze::blas_int_t* n, float* A, blaze::blas_int_t* lda,
@@ -91,11 +91,14 @@ void trtri( char uplo, char diag, blas_int_t n, float* A, blas_int_t lda,
 void trtri( char uplo, char diag, blas_int_t n, double* A, blas_int_t lda,
             blas_int_t* info );
 
+#ifndef ACCELERATE_NEW_LAPACK
+
 void trtri( char uplo, char diag, blas_int_t n, complex<float>* A, blas_int_t lda,
             blas_int_t* info );
 
 void trtri( char uplo, char diag, blas_int_t n, complex<double>* A, blas_int_t lda,
             blas_int_t* info );
+#endif
 //@}
 //*************************************************************************************************
 
@@ -139,7 +142,7 @@ inline void trtri( char uplo, char diag, blas_int_t n, float* A, blas_int_t lda,
 #endif
 
    strtri_( &uplo, &diag, &n, A, &lda, info
-#if !defined(INTEL_MKL_VERSION) && !defined(BLAS_H)
+#if !defined(INTEL_MKL_VERSION) && !defined(BLAS_H)  && !defined(ACCELERATE_NEW_LAPACK)
           , blaze::fortran_charlen_t(1), blaze::fortran_charlen_t(1)
 #endif
           );
@@ -186,7 +189,7 @@ inline void trtri( char uplo, char diag, blas_int_t n, double* A, blas_int_t lda
 #endif
 
    dtrtri_( &uplo, &diag, &n, A, &lda, info
-#if !defined(INTEL_MKL_VERSION) && !defined(BLAS_H)
+#if !defined(INTEL_MKL_VERSION) && !defined(BLAS_H)  && !defined(ACCELERATE_NEW_LAPACK)
           , blaze::fortran_charlen_t(1), blaze::fortran_charlen_t(1)
 #endif
           );
@@ -225,6 +228,8 @@ inline void trtri( char uplo, char diag, blas_int_t n, double* A, blas_int_t lda
 // is available and linked to the executable. Otherwise a call to this function will result in a
 // linker error.
 */
+#ifndef ACCELERATE_NEW_LAPACK
+
 inline void trtri( char uplo, char diag, blas_int_t n, complex<float>* A, blas_int_t lda,
                    blas_int_t* info )
 {
@@ -239,11 +244,12 @@ inline void trtri( char uplo, char diag, blas_int_t n, complex<float>* A, blas_i
 #endif
 
    ctrtri_( &uplo, &diag, &n, reinterpret_cast<ET*>( A ), &lda, info
-#if !defined(INTEL_MKL_VERSION) && !defined(BLAS_H)
+#if !defined(INTEL_MKL_VERSION) && !defined(BLAS_H)  && !defined(ACCELERATE_NEW_LAPACK)
           , blaze::fortran_charlen_t(1), blaze::fortran_charlen_t(1)
 #endif
           );
 }
+#endif
 //*************************************************************************************************
 
 
@@ -278,6 +284,8 @@ inline void trtri( char uplo, char diag, blas_int_t n, complex<float>* A, blas_i
 // is available and linked to the executable. Otherwise a call to this function will result in a
 // linker error.
 */
+#ifndef ACCELERATE_NEW_LAPACK
+
 inline void trtri( char uplo, char diag, blas_int_t n, complex<double>* A, blas_int_t lda,
                    blas_int_t* info )
 {
@@ -292,11 +300,12 @@ inline void trtri( char uplo, char diag, blas_int_t n, complex<double>* A, blas_
 #endif
 
    ztrtri_( &uplo, &diag, &n, reinterpret_cast<ET*>( A ), &lda, info
-#if !defined(INTEL_MKL_VERSION) && !defined(BLAS_H)
+#if !defined(INTEL_MKL_VERSION) && !defined(BLAS_H)  && !defined(ACCELERATE_NEW_LAPACK)
           , blaze::fortran_charlen_t(1), blaze::fortran_charlen_t(1)
 #endif
           );
 }
+#endif
 //*************************************************************************************************
 
 } // namespace blaze

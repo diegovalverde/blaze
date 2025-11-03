@@ -137,7 +137,7 @@ inline void axpy( blas_int_t n, double alpha, const double* x, blas_int_t incX,
 
 
 //*************************************************************************************************
-#if BLAZE_BLAS_MODE && !ACCELERATE_NEW_LAPACK
+#if BLAZE_BLAS_MODE && !defined(ACCELERATE_NEW_LAPACK)
 /*!\brief BLAS kernel for scaled dense vector addition for single precision complex operands
 //        (\f$ \vec{y}+=\alpha*\vec{x} \f$).
 // \ingroup blas
@@ -170,7 +170,7 @@ inline void axpy( blas_int_t n, complex<float> alpha, const complex<float>* x, b
 
 
 //*************************************************************************************************
-#if BLAZE_BLAS_MODE && !ACCELERATE_NEW_LAPACK
+#if BLAZE_BLAS_MODE && !defined(ACCELERATE_NEW_LAPACK)
 /*!\brief BLAS kernel for scaled dense vector addition for double precision complex operands
 //        (\f$ \vec{y}+=\alpha*\vec{x} \f$).
 // \ingroup blas

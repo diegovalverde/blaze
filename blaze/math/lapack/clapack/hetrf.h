@@ -54,7 +54,7 @@
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-#if !defined(INTEL_MKL_VERSION)
+#if !defined(INTEL_MKL_VERSION) && !defined(ACCELERATE_NEW_LAPACK)
 extern "C" {
 
 void chetrf_( char* uplo, blaze::blas_int_t* n, float* A, blaze::blas_int_t* lda,
@@ -83,11 +83,13 @@ namespace blaze {
 //*************************************************************************************************
 /*!\name LAPACK LDLH decomposition functions (hetrf) */
 //@{
+#ifndef ACCELERATE_NEW_LAPACK
 void hetrf( char uplo, blas_int_t n, complex<float>* A, blas_int_t lda,
             blas_int_t* ipiv, complex<float>* work, blas_int_t lwork, blas_int_t* info );
 
 void hetrf( char uplo, blas_int_t n, complex<double>* A, blas_int_t lda,
             blas_int_t* ipiv, complex<double>* work, blas_int_t lwork, blas_int_t* info );
+#endif
 //@}
 //*************************************************************************************************
 
@@ -140,6 +142,7 @@ void hetrf( char uplo, blas_int_t n, complex<double>* A, blas_int_t lda,
 // is available and linked to the executable. Otherwise a call to this function will result in a
 // linker error.
 */
+#ifndef ACCELERATE_NEW_LAPACK
 inline void hetrf( char uplo, blas_int_t n, complex<float>* A, blas_int_t lda,
                    blas_int_t* ipiv, complex<float>* work, blas_int_t lwork, blas_int_t* info )
 {
@@ -160,6 +163,7 @@ inline void hetrf( char uplo, blas_int_t n, complex<float>* A, blas_int_t lda,
 #endif
           );
 }
+#endif
 //*************************************************************************************************
 
 
@@ -211,6 +215,7 @@ inline void hetrf( char uplo, blas_int_t n, complex<float>* A, blas_int_t lda,
 // is available and linked to the executable. Otherwise a call to this function will result in a
 // linker error.
 */
+#ifndef ACCELERATE_NEW_LAPACK
 inline void hetrf( char uplo, blas_int_t n, complex<double>* A, blas_int_t lda,
                    blas_int_t* ipiv, complex<double>* work, blas_int_t lwork, blas_int_t* info )
 {
@@ -231,6 +236,7 @@ inline void hetrf( char uplo, blas_int_t n, complex<double>* A, blas_int_t lda,
 #endif
           );
 }
+#endif
 //*************************************************************************************************
 
 } // namespace blaze

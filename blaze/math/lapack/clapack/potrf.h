@@ -54,7 +54,7 @@
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-#if !defined(INTEL_MKL_VERSION) && !defined(BLAS_H)
+#if !defined(INTEL_MKL_VERSION) && !defined(BLAS_H)  && !defined(ACCELERATE_NEW_LAPACK)
 extern "C" {
 
 void spotrf_( char* uplo, blaze::blas_int_t* n, float* A, blaze::blas_int_t* lda,
@@ -89,9 +89,12 @@ void potrf( char uplo, blas_int_t n, float* A, blas_int_t lda, blas_int_t* info 
 
 void potrf( char uplo, blas_int_t n, double* A, blas_int_t lda, blas_int_t* info );
 
+#ifndef ACCELERATE_NEW_LAPACK
+
 void potrf( char uplo, blas_int_t n, complex<float>* A, blas_int_t lda, blas_int_t* info );
 
 void potrf( char uplo, blas_int_t n, complex<double>* A, blas_int_t lda, blas_int_t* info );
+#endif
 //@}
 //*************************************************************************************************
 
@@ -141,7 +144,7 @@ inline void potrf( char uplo, blas_int_t n, float* A, blas_int_t lda, blas_int_t
 #endif
 
    spotrf_( &uplo, &n, A, &lda, info
-#if !defined(INTEL_MKL_VERSION) && !defined(BLAS_H)
+#if !defined(INTEL_MKL_VERSION) && !defined(BLAS_H) && !defined(ACCELERATE_NEW_LAPACK)
           , blaze::fortran_charlen_t(1)
 #endif
           );
@@ -194,7 +197,7 @@ inline void potrf( char uplo, blas_int_t n, double* A, blas_int_t lda, blas_int_
 #endif
 
    dpotrf_( &uplo, &n, A, &lda, info
-#if !defined(INTEL_MKL_VERSION) && !defined(BLAS_H)
+#if !defined(INTEL_MKL_VERSION) && !defined(BLAS_H) && !defined(ACCELERATE_NEW_LAPACK)
           , blaze::fortran_charlen_t(1)
 #endif
           );
@@ -240,6 +243,8 @@ inline void potrf( char uplo, blas_int_t n, double* A, blas_int_t lda, blas_int_
 // is available and linked to the executable. Otherwise a call to this function will result in a
 // linker error.
 */
+#ifndef ACCELERATE_NEW_LAPACK
+
 inline void potrf( char uplo, blas_int_t n, complex<float>* A, blas_int_t lda, blas_int_t* info )
 {
    BLAZE_STATIC_ASSERT( sizeof( complex<float> ) == 2UL*sizeof( float ) );
@@ -253,11 +258,12 @@ inline void potrf( char uplo, blas_int_t n, complex<float>* A, blas_int_t lda, b
 #endif
 
    cpotrf_( &uplo, &n, reinterpret_cast<ET*>( A ), &lda, info
-#if !defined(INTEL_MKL_VERSION) && !defined(BLAS_H)
+#if !defined(INTEL_MKL_VERSION) && !defined(BLAS_H) && !defined(ACCELERATE_NEW_LAPACK)
           , blaze::fortran_charlen_t(1)
 #endif
           );
 }
+#endif
 //*************************************************************************************************
 
 
@@ -299,6 +305,8 @@ inline void potrf( char uplo, blas_int_t n, complex<float>* A, blas_int_t lda, b
 // is available and linked to the executable. Otherwise a call to this function will result in a
 // linker error.
 */
+#ifndef ACCELERATE_NEW_LAPACK
+
 inline void potrf( char uplo, blas_int_t n, complex<double>* A, blas_int_t lda, blas_int_t* info )
 {
    BLAZE_STATIC_ASSERT( sizeof( complex<double> ) == 2UL*sizeof( double ) );
@@ -312,11 +320,12 @@ inline void potrf( char uplo, blas_int_t n, complex<double>* A, blas_int_t lda, 
 #endif
 
    zpotrf_( &uplo, &n, reinterpret_cast<ET*>( A ), &lda, info
-#if !defined(INTEL_MKL_VERSION) && !defined(BLAS_H)
+#if !defined(INTEL_MKL_VERSION) && !defined(BLAS_H) && !defined(ACCELERATE_NEW_LAPACK)
           , blaze::fortran_charlen_t(1)
 #endif
           );
 }
+#endif
 //*************************************************************************************************
 
 } // namespace blaze

@@ -53,7 +53,7 @@
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-#if !defined(INTEL_MKL_VERSION) && !defined(BLAS_H)
+#if !defined(INTEL_MKL_VERSION) && !defined(BLAS_H)  && !defined(ACCELERATE_NEW_LAPACK)
 extern "C" {
 
 void sgesv_( blaze::blas_int_t* n, blaze::blas_int_t* nrhs, float* A, blaze::blas_int_t* lda,
@@ -90,11 +90,13 @@ void gesv( blas_int_t n, blas_int_t nrhs, float* A, blas_int_t lda,
 void gesv( blas_int_t n, blas_int_t nrhs, double* A, blas_int_t lda,
            blas_int_t* ipiv, double* B, blas_int_t ldb, blas_int_t* info );
 
+#ifndef ACCELERATE_NEW_LAPACK
 void gesv( blas_int_t n, blas_int_t nrhs, complex<float>* A, blas_int_t lda,
            blas_int_t* ipiv, complex<float>* B, blas_int_t ldb, blas_int_t* info );
 
 void gesv( blas_int_t n, blas_int_t nrhs, complex<double>* A, blas_int_t lda,
            blas_int_t* ipiv, complex<double>* B, blas_int_t ldb, blas_int_t* info );
+#endif
 //@}
 //*************************************************************************************************
 
@@ -252,6 +254,7 @@ inline void gesv( blas_int_t n, blas_int_t nrhs, double* A, blas_int_t lda,
 // is available and linked to the executable. Otherwise a call to this function will result in a
 // linker error.
 */
+#ifndef ACCELERATE_NEW_LAPACK
 inline void gesv( blas_int_t n, blas_int_t nrhs, complex<float>* A, blas_int_t lda,
                   blas_int_t* ipiv, complex<float>* B, blas_int_t ldb, blas_int_t* info )
 {
@@ -268,6 +271,7 @@ inline void gesv( blas_int_t n, blas_int_t nrhs, complex<float>* A, blas_int_t l
    cgesv_( &n, &nrhs, reinterpret_cast<ET*>( A ), &lda, ipiv,
            reinterpret_cast<ET*>( B ), &ldb, info );
 }
+#endif
 //*************************************************************************************************
 
 
@@ -314,6 +318,7 @@ inline void gesv( blas_int_t n, blas_int_t nrhs, complex<float>* A, blas_int_t l
 // is available and linked to the executable. Otherwise a call to this function will result in a
 // linker error.
 */
+#ifndef ACCELERATE_NEW_LAPACK
 inline void gesv( blas_int_t n, blas_int_t nrhs, complex<double>* A, blas_int_t lda,
                   blas_int_t* ipiv, complex<double>* B, blas_int_t ldb, blas_int_t* info )
 {
@@ -330,6 +335,7 @@ inline void gesv( blas_int_t n, blas_int_t nrhs, complex<double>* A, blas_int_t 
    zgesv_( &n, &nrhs, reinterpret_cast<ET*>( A ), &lda, ipiv,
            reinterpret_cast<ET*>( B ), &ldb, info );
 }
+#endif
 //*************************************************************************************************
 
 } // namespace blaze

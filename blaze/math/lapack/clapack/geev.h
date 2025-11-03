@@ -54,7 +54,7 @@
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-#if !defined(INTEL_MKL_VERSION)
+#if !defined(INTEL_MKL_VERSION) && !defined(ACCELERATE_NEW_LAPACK)
 extern "C" {
 
 void sgeev_( char* jobvl, char* jobvr, blaze::blas_int_t* n, float* A, blaze::blas_int_t* lda,
@@ -101,6 +101,7 @@ void geev( char jobvl, char jobvr, blas_int_t n, double* A, blas_int_t lda,
            double* wr, double* wi, double* VL, blas_int_t ldvl, double* VR, blas_int_t ldvr,
            double* work, blas_int_t lwork, blas_int_t* info );
 
+#ifndef ACCELERATE_NEW_LAPACK
 void geev( char jobvl, char jobvr, blas_int_t n, complex<float>* A, blas_int_t lda,
            complex<float>* w, complex<float>* VL, blas_int_t ldvl, complex<float>* VR,
            blas_int_t ldvr, complex<float>* work, blas_int_t lwork, float* rwork,
@@ -110,6 +111,7 @@ void geev( char jobvl, char jobvr, blas_int_t n, complex<double>* A, blas_int_t 
            complex<double>* w, complex<double>* VL, blas_int_t ldvl, complex<double>* VR,
            blas_int_t ldvr, complex<double>* work, blas_int_t lwork, double* rwork,
            blas_int_t* info );
+#endif
 //@}
 //*************************************************************************************************
 
@@ -185,7 +187,7 @@ inline void geev( char jobvl, char jobvr, blas_int_t n, float* A, blas_int_t lda
 #endif
 
    sgeev_( &jobvl, &jobvr, &n, A, &lda, wr, wi, VL, &ldvl, VR, &ldvr, work, &lwork, info
-#if !defined(INTEL_MKL_VERSION)
+#if !defined(INTEL_MKL_VERSION) && !defined(ACCELERATE_NEW_LAPACK)
          , blaze::fortran_charlen_t(1), blaze::fortran_charlen_t(1)
 #endif
          );
@@ -259,12 +261,12 @@ inline void geev( char jobvl, char jobvr, blas_int_t n, double* A, blas_int_t ld
                   double* wr, double* wi, double* VL, blas_int_t ldvl, double* VR, blas_int_t ldvr,
                   double* work, blas_int_t lwork, blas_int_t* info )
 {
-#if defined(INTEL_MKL_VERSION)
+#if defined(INTEL_MKL_VERSION)  && !defined(ACCELERATE_NEW_LAPACK)
    BLAZE_STATIC_ASSERT( sizeof( MKL_INT ) == sizeof( blas_int_t ) );
 #endif
 
    dgeev_( &jobvl, &jobvr, &n, A, &lda, wr, wi, VL, &ldvl, VR, &ldvr, work, &lwork, info
-#if !defined(INTEL_MKL_VERSION)
+#if !defined(INTEL_MKL_VERSION)  && !defined(ACCELERATE_NEW_LAPACK)
          , blaze::fortran_charlen_t(1), blaze::fortran_charlen_t(1)
 #endif
          );
@@ -334,6 +336,7 @@ inline void geev( char jobvl, char jobvr, blas_int_t n, double* A, blas_int_t ld
 // is available and linked to the executable. Otherwise a call to this function will result in a
 // linker error.
 */
+#ifndef ACCELERATE_NEW_LAPACK
 inline void geev( char jobvl, char jobvr, blas_int_t n, complex<float>* A, blas_int_t lda,
                   complex<float>* w, complex<float>* VL, blas_int_t ldvl, complex<float>* VR,
                   blas_int_t ldvr, complex<float>* work, blas_int_t lwork, float* rwork,
@@ -357,6 +360,7 @@ inline void geev( char jobvl, char jobvr, blas_int_t n, complex<float>* A, blas_
 #endif
          );
 }
+#endif
 //*************************************************************************************************
 
 
@@ -422,6 +426,7 @@ inline void geev( char jobvl, char jobvr, blas_int_t n, complex<float>* A, blas_
 // is available and linked to the executable. Otherwise a call to this function will result in a
 // linker error.
 */
+#ifndef ACCELERATE_NEW_LAPACK
 inline void geev( char jobvl, char jobvr, blas_int_t n, complex<double>* A, blas_int_t lda,
                   complex<double>* w, complex<double>* VL, blas_int_t ldvl, complex<double>* VR,
                   blas_int_t ldvr, complex<double>* work, blas_int_t lwork, double* rwork,
@@ -445,6 +450,7 @@ inline void geev( char jobvl, char jobvr, blas_int_t n, complex<double>* A, blas
 #endif
          );
 }
+#endif
 //*************************************************************************************************
 
 } // namespace blaze

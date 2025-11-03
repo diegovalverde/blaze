@@ -69,7 +69,7 @@ void gemv( CBLAS_ORDER layout, CBLAS_TRANSPOSE transA, blas_int_t m, blas_int_t 
 #endif
 
 
-#if BLAZE_BLAS_MODE && !ACCELERATE_NEW_LAPACK
+#if BLAZE_BLAS_MODE && !defined(ACCELERATE_NEW_LAPACK)
 void gemv( CBLAS_ORDER layout, CBLAS_TRANSPOSE transA, blas_int_t m, blas_int_t n,
            complex<float> alpha, const complex<float>* A, blas_int_t lda,
            const complex<float>* x, blas_int_t incX, complex<float> beta,
@@ -160,7 +160,7 @@ inline void gemv( CBLAS_ORDER order, CBLAS_TRANSPOSE transA, blas_int_t m, blas_
 
 
 //*************************************************************************************************
-#if BLAZE_BLAS_MODE && !ACCELERATE_NEW_LAPACK
+#if BLAZE_BLAS_MODE && !defined(ACCELERATE_NEW_LAPACK)
 /*!\brief BLAS kernel for a dense matrix/dense vector multiplication for single precision complex
 //        operands (\f$ \vec{y}=\alpha*A*\vec{x}+\beta*\vec{y} \f$).
 // \ingroup blas
@@ -202,7 +202,7 @@ inline void gemv( CBLAS_ORDER order, CBLAS_TRANSPOSE transA, blas_int_t m, blas_
 
 
 //*************************************************************************************************
-#if BLAZE_BLAS_MODE && !ACCELERATE_NEW_LAPACK
+#if BLAZE_BLAS_MODE && !defined(ACCELERATE_NEW_LAPACK)
 /*!\brief BLAS kernel for a dense matrix/dense vector multiplication for double precision complex
 //        operands (\f$ \vec{y}=\alpha*A*\vec{x}+\beta*\vec{y} \f$).
 // \ingroup blas

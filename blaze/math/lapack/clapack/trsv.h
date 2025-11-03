@@ -54,7 +54,7 @@
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-#if !defined(BLAS_H)
+#if !defined(BLAS_H) && !defined(ACCELERATE_NEW_LAPACK)
 extern "C" {
 
 void strsv_( char* uplo, char* trans, char* diag, blaze::blas_int_t* n, float* A,
@@ -99,11 +99,15 @@ void trsv( char uplo, char trans, char diag, blas_int_t n, const float* A,
 void trsv( char uplo, char trans, char diag, blas_int_t n, const double* A,
            blas_int_t lda, double* x, blas_int_t incX );
 
+#ifndef ACCELERATE_NEW_LAPACK
+
 void trsv( char uplo, char trans, char diag, blas_int_t n, const complex<float>* A,
            blas_int_t lda, complex<float>* x, blas_int_t incX );
 
 void trsv( char uplo, char trans, char diag, blas_int_t n, const complex<double>* A,
            blas_int_t lda, complex<double>* x, blas_int_t incX );
+
+#endif
 //@}
 //*************************************************************************************************
 
@@ -147,7 +151,7 @@ inline void trsv( char uplo, char trans, char diag, blas_int_t n, const float* A
                   blas_int_t lda, float* x, blas_int_t incX )
 {
    strsv_( &uplo, &trans, &diag, &n, const_cast<float*>( A ), &lda, x, &incX
-#if !defined(BLAS_H)
+#if !defined(BLAS_H) && !defined(ACCELERATE_NEW_LAPACK)
          , blaze::fortran_charlen_t(1), blaze::fortran_charlen_t(1), blaze::fortran_charlen_t(1)
 #endif
          );
@@ -194,7 +198,7 @@ inline void trsv( char uplo, char trans, char diag, blas_int_t n, const double* 
                   blas_int_t lda, double* x, blas_int_t incX )
 {
    dtrsv_( &uplo, &trans, &diag, &n, const_cast<double*>( A ), &lda, x, &incX
-#if !defined(BLAS_H)
+#if !defined(BLAS_H) && !defined(ACCELERATE_NEW_LAPACK)
          , blaze::fortran_charlen_t(1), blaze::fortran_charlen_t(1), blaze::fortran_charlen_t(1)
 #endif
          );
@@ -237,6 +241,8 @@ inline void trsv( char uplo, char trans, char diag, blas_int_t n, const double* 
 // \note The function does not perform any test for singularity or near-singularity. Such tests
 // must be performed prior to calling this function!
 */
+#ifndef ACCELERATE_NEW_LAPACK
+
 inline void trsv( char uplo, char trans, char diag, blas_int_t n, const complex<float>* A,
                   blas_int_t lda, complex<float>* x, blas_int_t incX )
 {
@@ -244,11 +250,12 @@ inline void trsv( char uplo, char trans, char diag, blas_int_t n, const complex<
 
    ctrsv_( &uplo, &trans, &diag, &n, const_cast<float*>( reinterpret_cast<const float*>( A ) ),
            &lda, reinterpret_cast<float*>( x ), &incX
-#if !defined(BLAS_H)
+#if !defined(BLAS_H) && !defined(ACCELERATE_NEW_LAPACK)
          , blaze::fortran_charlen_t(1), blaze::fortran_charlen_t(1), blaze::fortran_charlen_t(1)
 #endif
          );
 }
+#endif
 //*************************************************************************************************
 
 
@@ -287,6 +294,8 @@ inline void trsv( char uplo, char trans, char diag, blas_int_t n, const complex<
 // \note The function does not perform any test for singularity or near-singularity. Such tests
 // must be performed prior to calling this function!
 */
+#ifndef ACCELERATE_NEW_LAPACK
+
 inline void trsv( char uplo, char trans, char diag, blas_int_t n, const complex<double>* A,
                   blas_int_t lda, complex<double>* x, blas_int_t incX )
 {
@@ -294,11 +303,12 @@ inline void trsv( char uplo, char trans, char diag, blas_int_t n, const complex<
 
    ztrsv_( &uplo, &trans, &diag, &n, const_cast<double*>( reinterpret_cast<const double*>( A ) ),
            &lda, reinterpret_cast<double*>( x ), &incX
-#if !defined(BLAS_H)
+#if !defined(BLAS_H) && !defined(ACCELERATE_NEW_LAPACK)
          , blaze::fortran_charlen_t(1), blaze::fortran_charlen_t(1), blaze::fortran_charlen_t(1)
 #endif
          );
 }
+#endif
 //*************************************************************************************************
 
 } // namespace blaze

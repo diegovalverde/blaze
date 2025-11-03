@@ -54,7 +54,7 @@
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-#if !defined(INTEL_MKL_VERSION)
+#if !defined(INTEL_MKL_VERSION) && !defined(ACCELERATE_NEW_LAPACK)
 extern "C" {
 
 void ssyevx_( char* jobz, char* range, char* uplo, blaze::blas_int_t* n, float* A,
@@ -169,7 +169,7 @@ inline void syevx( char jobz, char range, char uplo, blas_int_t n, float* A,
                    float* Z, blas_int_t ldz, float* work, blas_int_t lwork,
                    blas_int_t* iwork, blas_int_t* ifail, blas_int_t* info )
 {
-#if defined(INTEL_MKL_VERSION)
+#if defined(INTEL_MKL_VERSION) && !defined(ACCELERATE_NEW_LAPACK)
    BLAZE_STATIC_ASSERT( sizeof( MKL_INT ) == sizeof( blas_int_t ) );
 #endif
 
@@ -178,7 +178,7 @@ inline void syevx( char jobz, char range, char uplo, blas_int_t n, float* A,
 
    ssyevx_( &jobz, &range, &uplo, &n, A, &lda, &vl, &vu, &il, &iu,
             &abstol, m, w, Z, &ldz, work, &lwork, iwork, ifail, info
-#if !defined(INTEL_MKL_VERSION)
+#if !defined(INTEL_MKL_VERSION) && !defined(ACCELERATE_NEW_LAPACK)
           , blaze::fortran_charlen_t(1), blaze::fortran_charlen_t(1), blaze::fortran_charlen_t(1)
 #endif
           );
@@ -249,7 +249,7 @@ inline void syevx( char jobz, char range, char uplo, blas_int_t n, double* A,
                    double* Z, blas_int_t ldz, double* work, blas_int_t lwork,
                    blas_int_t* iwork, blas_int_t* ifail, blas_int_t* info )
 {
-#if defined(INTEL_MKL_VERSION)
+#if defined(INTEL_MKL_VERSION) && !defined(ACCELERATE_NEW_LAPACK)
    BLAZE_STATIC_ASSERT( sizeof( MKL_INT ) == sizeof( blas_int_t ) );
 #endif
 
@@ -258,7 +258,7 @@ inline void syevx( char jobz, char range, char uplo, blas_int_t n, double* A,
 
    dsyevx_( &jobz, &range, &uplo, &n, A, &lda, &vl, &vu, &il, &iu,
             &abstol, m, w, Z, &ldz, work, &lwork, iwork, ifail, info
-#if !defined(INTEL_MKL_VERSION)
+#if !defined(INTEL_MKL_VERSION) && !defined(ACCELERATE_NEW_LAPACK)
           , blaze::fortran_charlen_t(1), blaze::fortran_charlen_t(1), blaze::fortran_charlen_t(1)
 #endif
           );

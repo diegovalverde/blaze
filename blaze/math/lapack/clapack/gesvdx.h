@@ -54,7 +54,7 @@
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-#if !defined(INTEL_MKL_VERSION) || (INTEL_MKL_VERSION < 20170000)
+#if (!defined(INTEL_MKL_VERSION) || (INTEL_MKL_VERSION < 20170000))  && !defined(ACCELERATE_NEW_LAPACK)
 extern "C" {
 
 void sgesvdx_( char* jobu, char* jobv, char* range, blaze::blas_int_t* m, blaze::blas_int_t* n,
@@ -119,6 +119,7 @@ void gesvdx( char jobu, char jobv, char range, blas_int_t m, blas_int_t n,
              double* work, blas_int_t lwork, blas_int_t* iwork,
              blas_int_t* info );
 
+#ifndef ACCELERATE_NEW_LAPACK
 void gesvdx( char jobu, char jobv, char range, blas_int_t m, blas_int_t n,
              complex<float>* A, blas_int_t lda, float vl, float vu,
              blas_int_t il, blas_int_t iu, blas_int_t* ns, float* s,
@@ -132,6 +133,7 @@ void gesvdx( char jobu, char jobv, char range, blas_int_t m, blas_int_t n,
              complex<double>* U, blas_int_t ldu, complex<double>* V, blas_int_t ldv,
              complex<double>* work, blas_int_t lwork, double* rwork,
              blas_int_t* iwork, blas_int_t* info );
+#endif
 //@}
 //*************************************************************************************************
 
@@ -217,7 +219,7 @@ inline void gesvdx( char jobu, char jobv, char range, blas_int_t m, blas_int_t n
                     float* work, blas_int_t lwork, blas_int_t* iwork,
                     blas_int_t* info )
 {
-#if defined(INTEL_MKL_VERSION) && (INTEL_MKL_VERSION >= 20170000)
+#if defined(INTEL_MKL_VERSION) && (INTEL_MKL_VERSION >= 20170000)  && !defined(ACCELERATE_NEW_LAPACK)
    BLAZE_STATIC_ASSERT( sizeof( MKL_INT ) == sizeof( blas_int_t ) );
 #endif
 
@@ -226,7 +228,7 @@ inline void gesvdx( char jobu, char jobv, char range, blas_int_t m, blas_int_t n
 
    sgesvdx_( &jobu, &jobv, &range, &m, &n, A, &lda, &vl, &vu, &il, &iu, ns,
              s, U, &ldu, V, &ldv, work, &lwork, iwork, info
-#if !defined(INTEL_MKL_VERSION) || (INTEL_MKL_VERSION < 20170000)
+#if (!defined(INTEL_MKL_VERSION) || (INTEL_MKL_VERSION < 20170000))  && !defined(ACCELERATE_NEW_LAPACK)
            , blaze::fortran_charlen_t(1), blaze::fortran_charlen_t(1), blaze::fortran_charlen_t(1)
 #endif
            );
@@ -315,7 +317,7 @@ inline void gesvdx( char jobu, char jobv, char range, blas_int_t m, blas_int_t n
                     double* work, blas_int_t lwork, blas_int_t* iwork,
                     blas_int_t* info )
 {
-#if defined(INTEL_MKL_VERSION) && (INTEL_MKL_VERSION >= 20170000)
+#if defined(INTEL_MKL_VERSION) && (INTEL_MKL_VERSION >= 20170000)  && !defined(ACCELERATE_NEW_LAPACK)
    BLAZE_STATIC_ASSERT( sizeof( MKL_INT ) == sizeof( blas_int_t ) );
 #endif
 
@@ -324,7 +326,7 @@ inline void gesvdx( char jobu, char jobv, char range, blas_int_t m, blas_int_t n
 
    dgesvdx_( &jobu, &jobv, &range, &m, &n, A, &lda, &vl, &vu, &il, &iu, ns,
              s, U, &ldu, V, &ldv, work, &lwork, iwork, info
-#if !defined(INTEL_MKL_VERSION) || (INTEL_MKL_VERSION < 20170000)
+#if (!defined(INTEL_MKL_VERSION) || (INTEL_MKL_VERSION < 20170000))  && !defined(ACCELERATE_NEW_LAPACK)
            , blaze::fortran_charlen_t(1), blaze::fortran_charlen_t(1), blaze::fortran_charlen_t(1)
 #endif
            );
@@ -407,6 +409,7 @@ inline void gesvdx( char jobu, char jobv, char range, blas_int_t m, blas_int_t n
 // is available and linked to the executable. Otherwise a call to this function will result in a
 // linker error.
 */
+#ifndef ACCELERATE_NEW_LAPACK
 inline void gesvdx( char jobu, char jobv, char range, blas_int_t m, blas_int_t n,
                     complex<float>* A, blas_int_t lda, float vl, float vu,
                     blas_int_t il, blas_int_t iu, blas_int_t* ns, float* s,
@@ -416,7 +419,7 @@ inline void gesvdx( char jobu, char jobv, char range, blas_int_t m, blas_int_t n
 {
    BLAZE_STATIC_ASSERT( sizeof( complex<float> ) == 2UL*sizeof( float ) );
 
-#if defined(INTEL_MKL_VERSION) && (INTEL_MKL_VERSION >= 20170000)
+#if defined(INTEL_MKL_VERSION) && (INTEL_MKL_VERSION >= 20170000)  && !defined(ACCELERATE_NEW_LAPACK)
    BLAZE_STATIC_ASSERT( sizeof( MKL_INT ) == sizeof( blas_int_t ) );
    BLAZE_STATIC_ASSERT( sizeof( MKL_Complex8 ) == sizeof( complex<float> ) );
    using ET = MKL_Complex8;
@@ -431,11 +434,12 @@ inline void gesvdx( char jobu, char jobv, char range, blas_int_t m, blas_int_t n
              &vl, &vu, &il, &iu, ns, s,
              reinterpret_cast<ET*>( U ), &ldu, reinterpret_cast<ET*>( V ), &ldv,
              reinterpret_cast<ET*>( work ), &lwork, rwork, iwork, info
-#if !defined(INTEL_MKL_VERSION) || (INTEL_MKL_VERSION < 20170000)
+#if !defined(INTEL_MKL_VERSION) || (INTEL_MKL_VERSION < 20170000)  && !defined(ACCELERATE_NEW_LAPACK)
            , blaze::fortran_charlen_t(1), blaze::fortran_charlen_t(1), blaze::fortran_charlen_t(1)
 #endif
            );
 }
+#endif
 //*************************************************************************************************
 
 
@@ -514,6 +518,7 @@ inline void gesvdx( char jobu, char jobv, char range, blas_int_t m, blas_int_t n
 // is available and linked to the executable. Otherwise a call to this function will result in a
 // linker error.
 */
+#ifndef ACCELERATE_NEW_LAPACK
 inline void gesvdx( char jobu, char jobv, char range, blas_int_t m, blas_int_t n,
                     complex<double>* A, blas_int_t lda, double vl, double vu,
                     blas_int_t il, blas_int_t iu, blas_int_t* ns, double* s,
@@ -523,7 +528,7 @@ inline void gesvdx( char jobu, char jobv, char range, blas_int_t m, blas_int_t n
 {
    BLAZE_STATIC_ASSERT( sizeof( complex<double> ) == 2UL*sizeof( double ) );
 
-#if defined(INTEL_MKL_VERSION) && (INTEL_MKL_VERSION >= 20170000)
+#if defined(INTEL_MKL_VERSION) && (INTEL_MKL_VERSION >= 20170000)  && !defined(ACCELERATE_NEW_LAPACK)
    BLAZE_STATIC_ASSERT( sizeof( MKL_INT ) == sizeof( blas_int_t ) );
    BLAZE_STATIC_ASSERT( sizeof( MKL_Complex16 ) == sizeof( complex<double> ) );
    using ET = MKL_Complex16;
@@ -538,11 +543,12 @@ inline void gesvdx( char jobu, char jobv, char range, blas_int_t m, blas_int_t n
              &vl, &vu, &il, &iu, ns, s,
              reinterpret_cast<ET*>( U ), &ldu, reinterpret_cast<ET*>( V ), &ldv,
              reinterpret_cast<ET*>( work ), &lwork, rwork, iwork, info
-#if !defined(INTEL_MKL_VERSION) || (INTEL_MKL_VERSION < 20170000)
+#if !defined(INTEL_MKL_VERSION) || (INTEL_MKL_VERSION < 20170000)  && !defined(ACCELERATE_NEW_LAPACK)
            , blaze::fortran_charlen_t(1), blaze::fortran_charlen_t(1), blaze::fortran_charlen_t(1)
 #endif
            );
 }
+#endif
 //*************************************************************************************************
 
 } // namespace blaze

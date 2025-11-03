@@ -53,7 +53,7 @@
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-#if !defined(INTEL_MKL_VERSION)
+#if !defined(INTEL_MKL_VERSION)  && !defined(ACCELERATE_NEW_LAPACK)
 extern "C" {
 
 void cunglq_( blaze::blas_int_t* m, blaze::blas_int_t* n, blaze::blas_int_t* k, float* A,
@@ -82,6 +82,8 @@ namespace blaze {
 //*************************************************************************************************
 /*!\name LAPACK functions to reconstruct Q from a LQ decomposition (unglq) */
 //@{
+#ifndef ACCELERATE_NEW_LAPACK
+
 void unglq( blas_int_t m, blas_int_t n, blas_int_t k, complex<float>* A,
             blas_int_t lda, const complex<float>* tau, complex<float>* work,
             blas_int_t lwork, blas_int_t* info );
@@ -89,6 +91,8 @@ void unglq( blas_int_t m, blas_int_t n, blas_int_t k, complex<float>* A,
 void unglq( blas_int_t m, blas_int_t n, blas_int_t k, complex<double>* A,
             blas_int_t lda, const complex<double>* tau, complex<double>* work,
             blas_int_t lwork, blas_int_t* info );
+
+#endif
 //@}
 //*************************************************************************************************
 
@@ -124,6 +128,8 @@ void unglq( blas_int_t m, blas_int_t n, blas_int_t k, complex<double>* A,
 // is available and linked to the executable. Otherwise a call to this function will result in a
 // linker error.
 */
+#ifndef ACCELERATE_NEW_LAPACK
+
 inline void unglq( blas_int_t m, blas_int_t n, blas_int_t k, complex<float>* A,
                    blas_int_t lda, const complex<float>* tau, complex<float>* work,
                    blas_int_t lwork, blas_int_t* info )
@@ -142,6 +148,7 @@ inline void unglq( blas_int_t m, blas_int_t n, blas_int_t k, complex<float>* A,
             const_cast<ET*>( reinterpret_cast<const ET*>( tau ) ),
             reinterpret_cast<ET*>( work ), &lwork, info );
 }
+#endif
 //*************************************************************************************************
 
 
@@ -176,6 +183,8 @@ inline void unglq( blas_int_t m, blas_int_t n, blas_int_t k, complex<float>* A,
 // is available and linked to the executable. Otherwise a call to this function will result in a
 // linker error.
 */
+#ifndef ACCELERATE_NEW_LAPACK
+
 inline void unglq( blas_int_t m, blas_int_t n, blas_int_t k, complex<double>* A,
                    blas_int_t lda, const complex<double>* tau, complex<double>* work,
                    blas_int_t lwork, blas_int_t* info )
@@ -194,6 +203,7 @@ inline void unglq( blas_int_t m, blas_int_t n, blas_int_t k, complex<double>* A,
             const_cast<ET*>( reinterpret_cast<const ET*>( tau ) ),
             reinterpret_cast<ET*>( work ), &lwork, info );
 }
+#endif
 //*************************************************************************************************
 
 } // namespace blaze

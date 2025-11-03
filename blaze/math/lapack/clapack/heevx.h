@@ -54,7 +54,7 @@
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-#if !defined(INTEL_MKL_VERSION)
+#if !defined(INTEL_MKL_VERSION) && !defined(ACCELERATE_NEW_LAPACK)
 extern "C" {
 
 void cheevx_( char* jobz, char* range, char* uplo, blaze::blas_int_t* n, float* A,
@@ -91,6 +91,7 @@ namespace blaze {
 //*************************************************************************************************
 /*!\name LAPACK Hermitian matrix eigenvalue functions (heevx) */
 //@{
+#ifndef ACCELERATE_NEW_LAPACK
 void heevx( char jobz, char range, char uplo, blas_int_t n, complex<float>* A,
             blas_int_t lda, float vl, float vu, blas_int_t il, blas_int_t iu,
             float abstol, blas_int_t* m, float* w, complex<float>* Z, blas_int_t ldz,
@@ -102,6 +103,7 @@ void heevx( char jobz, char range, char uplo, blas_int_t n, complex<double>* A,
             double abstol, blas_int_t* m, double* w, complex<double>* Z, blas_int_t ldz,
             complex<double>* work, blas_int_t lwork, double* rwork, blas_int_t* iwork,
             blas_int_t* ifail, blas_int_t* info );
+#endif
 //@}
 //*************************************************************************************************
 
@@ -164,6 +166,7 @@ void heevx( char jobz, char range, char uplo, blas_int_t n, complex<double>* A,
 // is available and linked to the executable. Otherwise a call to this function will result in a
 // linker error.
 */
+ #ifndef ACCELERATE_NEW_LAPACK
 inline void heevx( char jobz, char range, char uplo, blas_int_t n, complex<float>* A,
                    blas_int_t lda, float vl, float vu, blas_int_t il, blas_int_t iu,
                    float abstol, blas_int_t* m, float* w, complex<float>* Z, blas_int_t ldz,
@@ -172,7 +175,7 @@ inline void heevx( char jobz, char range, char uplo, blas_int_t n, complex<float
 {
    BLAZE_STATIC_ASSERT( sizeof( complex<float> ) == 2UL*sizeof( float ) );
 
-#if defined(INTEL_MKL_VERSION)
+#if defined(INTEL_MKL_VERSION) && !defined(ACCELERATE_NEW_LAPACK)
    BLAZE_STATIC_ASSERT( sizeof( MKL_INT ) == sizeof( blas_int_t ) );
    BLAZE_STATIC_ASSERT( sizeof( MKL_Complex8 ) == sizeof( complex<float> ) );
    using ET = MKL_Complex8;
@@ -186,11 +189,12 @@ inline void heevx( char jobz, char range, char uplo, blas_int_t n, complex<float
    cheevx_( &jobz, &range, &uplo, &n, reinterpret_cast<ET*>( A ), &lda, &vl, &vu, &il, &iu,
             &abstol, m, w, reinterpret_cast<ET*>( Z ), &ldz, reinterpret_cast<ET*>( work ),
             &lwork, rwork, iwork, ifail, info
-#if !defined(INTEL_MKL_VERSION)
+#if !defined(INTEL_MKL_VERSION) && !defined(ACCELERATE_NEW_LAPACK)
           , blaze::fortran_charlen_t(1), blaze::fortran_charlen_t(1), blaze::fortran_charlen_t(1)
 #endif
           );
 }
+#endif
 //*************************************************************************************************
 
 
@@ -252,6 +256,7 @@ inline void heevx( char jobz, char range, char uplo, blas_int_t n, complex<float
 // is available and linked to the executable. Otherwise a call to this function will result in a
 // linker error.
 */
+#ifndef ACCELERATE_NEW_LAPACK
 inline void heevx( char jobz, char range, char uplo, blas_int_t n, complex<double>* A,
                    blas_int_t lda, double vl, double vu, blas_int_t il, blas_int_t iu,
                    double abstol, blas_int_t* m, double* w, complex<double>* Z, blas_int_t ldz,
@@ -260,7 +265,7 @@ inline void heevx( char jobz, char range, char uplo, blas_int_t n, complex<doubl
 {
    BLAZE_STATIC_ASSERT( sizeof( complex<double> ) == 2UL*sizeof( double ) );
 
-#if defined(INTEL_MKL_VERSION)
+#if defined(INTEL_MKL_VERSION) && !defined(ACCELERATE_NEW_LAPACK)
    BLAZE_STATIC_ASSERT( sizeof( MKL_INT ) == sizeof( blas_int_t ) );
    BLAZE_STATIC_ASSERT( sizeof( MKL_Complex16 ) == sizeof( complex<double> ) );
    using ET = MKL_Complex16;
@@ -274,11 +279,12 @@ inline void heevx( char jobz, char range, char uplo, blas_int_t n, complex<doubl
    zheevx_( &jobz, &range, &uplo, &n, reinterpret_cast<ET*>( A ), &lda, &vl, &vu, &il, &iu,
             &abstol, m, w, reinterpret_cast<ET*>( Z ), &ldz, reinterpret_cast<ET*>( work ),
             &lwork, rwork, iwork, ifail, info
-#if !defined(INTEL_MKL_VERSION)
+#if !defined(INTEL_MKL_VERSION) && !defined(ACCELERATE_NEW_LAPACK)
           , blaze::fortran_charlen_t(1), blaze::fortran_charlen_t(1), blaze::fortran_charlen_t(1)
 #endif
           );
 }
+#endif
 //*************************************************************************************************
 
 } // namespace blaze

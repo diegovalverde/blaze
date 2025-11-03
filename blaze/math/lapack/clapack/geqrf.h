@@ -53,7 +53,7 @@
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-#if !defined(INTEL_MKL_VERSION)
+#if !defined(INTEL_MKL_VERSION) && !defined(ACCELERATE_NEW_LAPACK)
 extern "C" {
 
 void sgeqrf_( blaze::blas_int_t* m, blaze::blas_int_t* n, float* A, blaze::blas_int_t* lda,
@@ -90,11 +90,13 @@ void geqrf( blas_int_t m, blas_int_t n, float* A, blas_int_t lda,
 void geqrf( blas_int_t m, blas_int_t n, double* A, blas_int_t lda,
             double* tau, double* work, blas_int_t lwork, blas_int_t* info );
 
+#ifndef ACCELERATE_NEW_LAPACK
 void geqrf( blas_int_t m, blas_int_t n, complex<float>* A, blas_int_t lda,
             complex<float>* tau, complex<float>* work, blas_int_t lwork, blas_int_t* info );
 
 void geqrf( blas_int_t m, blas_int_t n, complex<double>* A, blas_int_t lda,
             complex<double>* tau, complex<double>* work, blas_int_t lwork, blas_int_t* info );
+#endif
 //@}
 //*************************************************************************************************
 
@@ -270,6 +272,7 @@ inline void geqrf( blas_int_t m, blas_int_t n, double* A, blas_int_t lda,
 // is available and linked to the executable. Otherwise a call to this function will result in a
 // linker error.
 */
+#ifndef ACCELERATE_NEW_LAPACK
 inline void geqrf( blas_int_t m, blas_int_t n, complex<float>* A, blas_int_t lda,
                    complex<float>* tau, complex<float>* work, blas_int_t lwork, blas_int_t* info )
 {
@@ -286,6 +289,7 @@ inline void geqrf( blas_int_t m, blas_int_t n, complex<float>* A, blas_int_t lda
    cgeqrf_( &m, &n, reinterpret_cast<ET*>( A ), &lda, reinterpret_cast<ET*>( tau ),
             reinterpret_cast<ET*>( work ), &lwork, info );
 }
+#endif
 //*************************************************************************************************
 
 
@@ -338,6 +342,7 @@ inline void geqrf( blas_int_t m, blas_int_t n, complex<float>* A, blas_int_t lda
 // is available and linked to the executable. Otherwise a call to this function will result in a
 // linker error.
 */
+#ifndef ACCELERATE_NEW_LAPACK
 inline void geqrf( blas_int_t m, blas_int_t n, complex<double>* A, blas_int_t lda,
                    complex<double>* tau, complex<double>* work, blas_int_t lwork, blas_int_t* info )
 {
@@ -354,6 +359,7 @@ inline void geqrf( blas_int_t m, blas_int_t n, complex<double>* A, blas_int_t ld
    zgeqrf_( &m, &n, reinterpret_cast<ET*>( A ), &lda, reinterpret_cast<ET*>( tau ),
             reinterpret_cast<ET*>( work ), &lwork, info );
 }
+#endif
 //*************************************************************************************************
 
 } // namespace blaze

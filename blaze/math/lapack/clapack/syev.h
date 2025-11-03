@@ -54,7 +54,7 @@
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-#if !defined(INTEL_MKL_VERSION)
+#if !defined(INTEL_MKL_VERSION) && !defined(ACCELERATE_NEW_LAPACK)
 extern "C" {
 
 void ssyev_( char* jobz, char* uplo, blaze::blas_int_t* n, float* A, blaze::blas_int_t* lda,
@@ -135,12 +135,12 @@ void syev( char jobz, char uplo, blas_int_t n, double* A, blas_int_t lda,
 inline void syev( char jobz, char uplo, blas_int_t n, float* A, blas_int_t lda,
                   float* w, float* work, blas_int_t lwork, blas_int_t* info )
 {
-#if defined(INTEL_MKL_VERSION)
+#if defined(INTEL_MKL_VERSION) && !defined(ACCELERATE_NEW_LAPACK)
    BLAZE_STATIC_ASSERT( sizeof( MKL_INT ) == sizeof( blas_int_t ) );
 #endif
 
    ssyev_( &jobz, &uplo, &n, A, &lda, w, work, &lwork, info
-#if !defined(INTEL_MKL_VERSION)
+#if !defined(INTEL_MKL_VERSION) && !defined(ACCELERATE_NEW_LAPACK)
          , blaze::fortran_charlen_t(1), blaze::fortran_charlen_t(1)
 #endif
          );
@@ -191,12 +191,12 @@ inline void syev( char jobz, char uplo, blas_int_t n, float* A, blas_int_t lda,
 inline void syev( char jobz, char uplo, blas_int_t n, double* A, blas_int_t lda,
                   double* w, double* work, blas_int_t lwork, blas_int_t* info )
 {
-#if defined(INTEL_MKL_VERSION)
+#if defined(INTEL_MKL_VERSION) && !defined(ACCELERATE_NEW_LAPACK)
    BLAZE_STATIC_ASSERT( sizeof( MKL_INT ) == sizeof( blas_int_t ) );
 #endif
 
    dsyev_( &jobz, &uplo, &n, A, &lda, w, work, &lwork, info
-#if !defined(INTEL_MKL_VERSION)
+#if !defined(INTEL_MKL_VERSION) && !defined(ACCELERATE_NEW_LAPACK)
          , blaze::fortran_charlen_t(1), blaze::fortran_charlen_t(1)
 #endif
          );

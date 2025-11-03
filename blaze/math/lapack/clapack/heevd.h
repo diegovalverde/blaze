@@ -54,7 +54,7 @@
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-#if !defined(INTEL_MKL_VERSION)
+#if !defined(INTEL_MKL_VERSION) && !defined(ACCELERATE_NEW_LAPACK)
 extern "C" {
 
 void cheevd_( char* jobz, char* uplo, blaze::blas_int_t* n, float* A, blaze::blas_int_t* lda,
@@ -85,6 +85,7 @@ namespace blaze {
 //*************************************************************************************************
 /*!\name LAPACK Hermitian matrix eigenvalue functions (heevd) */
 //@{
+#ifndef ACCELERATE_NEW_LAPACK
 void heevd( char jobz, char uplo, blas_int_t n, complex<float>* A, blas_int_t lda,
             float* w, complex<float>* work, blas_int_t lwork, float* rwork,
             blas_int_t lrwork, blas_int_t* iwork, blas_int_t liwork, blas_int_t* info );
@@ -92,6 +93,7 @@ void heevd( char jobz, char uplo, blas_int_t n, complex<float>* A, blas_int_t ld
 void heevd( char jobz, char uplo, blas_int_t n, complex<double>* A, blas_int_t lda,
             double* w, complex<double>* work, blas_int_t lwork, double* rwork,
             blas_int_t lrwork, blas_int_t* iwork, blas_int_t liwork, blas_int_t* info );
+#endif
 //@}
 //*************************************************************************************************
 
@@ -140,13 +142,14 @@ void heevd( char jobz, char uplo, blas_int_t n, complex<double>* A, blas_int_t l
 // is available and linked to the executable. Otherwise a call to this function will result in a
 // linker error.
 */
+#ifndef ACCELERATE_NEW_LAPACK
 inline void heevd( char jobz, char uplo, blas_int_t n, complex<float>* A, blas_int_t lda,
                    float* w, complex<float>* work, blas_int_t lwork, float* rwork,
                    blas_int_t lrwork, blas_int_t* iwork, blas_int_t liwork, blas_int_t* info )
 {
    BLAZE_STATIC_ASSERT( sizeof( complex<float> ) == 2UL*sizeof( float ) );
 
-#if defined(INTEL_MKL_VERSION)
+#if defined(INTEL_MKL_VERSION) && !defined(ACCELERATE_NEW_LAPACK)
    BLAZE_STATIC_ASSERT( sizeof( MKL_INT ) == sizeof( blas_int_t ) );
    BLAZE_STATIC_ASSERT( sizeof( MKL_Complex8 ) == sizeof( complex<float> ) );
    using ET = MKL_Complex8;
@@ -156,11 +159,12 @@ inline void heevd( char jobz, char uplo, blas_int_t n, complex<float>* A, blas_i
 
    cheevd_( &jobz, &uplo, &n, reinterpret_cast<ET*>( A ), &lda, w,
             reinterpret_cast<ET*>( work ), &lwork, rwork, &lrwork, iwork, &liwork, info
-#if !defined(INTEL_MKL_VERSION)
+#if !defined(INTEL_MKL_VERSION) && !defined(ACCELERATE_NEW_LAPACK)
           , blaze::fortran_charlen_t(1), blaze::fortran_charlen_t(1)
 #endif
           );
 }
+#endif
 //*************************************************************************************************
 
 
@@ -208,13 +212,14 @@ inline void heevd( char jobz, char uplo, blas_int_t n, complex<float>* A, blas_i
 // is available and linked to the executable. Otherwise a call to this function will result in a
 // linker error.
 */
+#ifndef ACCELERATE_NEW_LAPACK
 inline void heevd( char jobz, char uplo, blas_int_t n, complex<double>* A, blas_int_t lda,
                    double* w, complex<double>* work, blas_int_t lwork, double* rwork,
                    blas_int_t lrwork, blas_int_t* iwork, blas_int_t liwork, blas_int_t* info )
 {
    BLAZE_STATIC_ASSERT( sizeof( complex<double> ) == 2UL*sizeof( double ) );
 
-#if defined(INTEL_MKL_VERSION)
+#if defined(INTEL_MKL_VERSION) && !defined(ACCELERATE_NEW_LAPACK)
    BLAZE_STATIC_ASSERT( sizeof( MKL_INT ) == sizeof( blas_int_t ) );
    BLAZE_STATIC_ASSERT( sizeof( MKL_Complex16 ) == sizeof( complex<double> ) );
    using ET = MKL_Complex16;
@@ -224,11 +229,12 @@ inline void heevd( char jobz, char uplo, blas_int_t n, complex<double>* A, blas_
 
    zheevd_( &jobz, &uplo, &n, reinterpret_cast<ET*>( A ), &lda, w,
             reinterpret_cast<ET*>( work ), &lwork, rwork, &lrwork, iwork, &liwork, info
-#if !defined(INTEL_MKL_VERSION)
+#if !defined(INTEL_MKL_VERSION) && !defined(ACCELERATE_NEW_LAPACK)
           , blaze::fortran_charlen_t(1), blaze::fortran_charlen_t(1)
 #endif
           );
 }
+#endif
 //*************************************************************************************************
 
 } // namespace blaze

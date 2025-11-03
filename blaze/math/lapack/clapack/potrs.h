@@ -54,7 +54,7 @@
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-#if !defined(INTEL_MKL_VERSION)
+#if !defined(INTEL_MKL_VERSION) && !defined(ACCELERATE_NEW_LAPACK)
 extern "C" {
 
 void spotrs_( char* uplo, blaze::blas_int_t* n, blaze::blas_int_t* nrhs, float* A,
@@ -95,11 +95,14 @@ void potrs( char uplo, blas_int_t n, blas_int_t nrhs, const float* A, blas_int_t
 void potrs( char uplo, blas_int_t n, blas_int_t nrhs, const double* A, blas_int_t lda,
             double* B, blas_int_t ldb, blas_int_t* info );
 
+#ifndef ACCELERATE_NEW_LAPACK
+
 void potrs( char uplo, blas_int_t n, blas_int_t nrhs, const complex<float>* A, blas_int_t lda,
             complex<float>* B, blas_int_t ldb, blas_int_t* info );
 
 void potrs( char uplo, blas_int_t n, blas_int_t nrhs, const complex<double>* A, blas_int_t lda,
             complex<double>* B, blas_int_t ldb, blas_int_t* info );
+#endif
 //@}
 //*************************************************************************************************
 
@@ -140,12 +143,12 @@ void potrs( char uplo, blas_int_t n, blas_int_t nrhs, const complex<double>* A, 
 inline void potrs( char uplo, blas_int_t n, blas_int_t nrhs, const float* A, blas_int_t lda,
                    float* B, blas_int_t ldb, blas_int_t* info )
 {
-#if defined(INTEL_MKL_VERSION)
+#if defined(INTEL_MKL_VERSION) && !defined(ACCELERATE_NEW_LAPACK)
    BLAZE_STATIC_ASSERT( sizeof( MKL_INT ) == sizeof( blas_int_t ) );
 #endif
 
    spotrs_( &uplo, &n, &nrhs, const_cast<float*>( A ), &lda, B, &ldb, info
-#if !defined(INTEL_MKL_VERSION)
+#if !defined(INTEL_MKL_VERSION) && !defined(ACCELERATE_NEW_LAPACK)
           , blaze::fortran_charlen_t(1)
 #endif
           );
@@ -189,12 +192,12 @@ inline void potrs( char uplo, blas_int_t n, blas_int_t nrhs, const float* A, bla
 inline void potrs( char uplo, blas_int_t n, blas_int_t nrhs, const double* A, blas_int_t lda,
                    double* B, blas_int_t ldb, blas_int_t* info )
 {
-#if defined(INTEL_MKL_VERSION)
+#if defined(INTEL_MKL_VERSION) && !defined(ACCELERATE_NEW_LAPACK)
    BLAZE_STATIC_ASSERT( sizeof( MKL_INT ) == sizeof( blas_int_t ) );
 #endif
 
    dpotrs_( &uplo, &n, &nrhs, const_cast<double*>( A ), &lda, B, &ldb, info
-#if !defined(INTEL_MKL_VERSION)
+#if !defined(INTEL_MKL_VERSION) && !defined(ACCELERATE_NEW_LAPACK)
           , blaze::fortran_charlen_t(1)
 #endif
           );
@@ -235,12 +238,14 @@ inline void potrs( char uplo, blas_int_t n, blas_int_t nrhs, const double* A, bl
 // is available and linked to the executable. Otherwise a call to this function will result in a
 // linker error.
 */
+#ifndef ACCELERATE_NEW_LAPACK
+
 inline void potrs( char uplo, blas_int_t n, blas_int_t nrhs, const complex<float>* A, blas_int_t lda,
                    complex<float>* B, blas_int_t ldb, blas_int_t* info )
 {
    BLAZE_STATIC_ASSERT( sizeof( complex<float> ) == 2UL*sizeof( float ) );
 
-#if defined(INTEL_MKL_VERSION)
+#if defined(INTEL_MKL_VERSION) && !defined(ACCELERATE_NEW_LAPACK)
    BLAZE_STATIC_ASSERT( sizeof( MKL_INT ) == sizeof( blas_int_t ) );
    BLAZE_STATIC_ASSERT( sizeof( MKL_Complex8 ) == sizeof( complex<float> ) );
    using ET = MKL_Complex8;
@@ -250,11 +255,12 @@ inline void potrs( char uplo, blas_int_t n, blas_int_t nrhs, const complex<float
 
    cpotrs_( &uplo, &n, &nrhs, const_cast<ET*>( reinterpret_cast<const ET*>( A ) ),
             &lda, reinterpret_cast<ET*>( B ), &ldb, info
-#if !defined(INTEL_MKL_VERSION)
+#if !defined(INTEL_MKL_VERSION) && !defined(ACCELERATE_NEW_LAPACK)
           , blaze::fortran_charlen_t(1)
 #endif
           );
 }
+#endif
 //*************************************************************************************************
 
 
@@ -291,12 +297,14 @@ inline void potrs( char uplo, blas_int_t n, blas_int_t nrhs, const complex<float
 // is available and linked to the executable. Otherwise a call to this function will result in a
 // linker error.
 */
+#ifndef ACCELERATE_NEW_LAPACK
+
 inline void potrs( char uplo, blas_int_t n, blas_int_t nrhs, const complex<double>* A, blas_int_t lda,
                    complex<double>* B, blas_int_t ldb, blas_int_t* info )
 {
    BLAZE_STATIC_ASSERT( sizeof( complex<double> ) == 2UL*sizeof( double ) );
 
-#if defined(INTEL_MKL_VERSION)
+#if defined(INTEL_MKL_VERSION) && !defined(ACCELERATE_NEW_LAPACK)
    BLAZE_STATIC_ASSERT( sizeof( MKL_INT ) == sizeof( blas_int_t ) );
    BLAZE_STATIC_ASSERT( sizeof( MKL_Complex16 ) == sizeof( complex<double> ) );
    using ET = MKL_Complex16;
@@ -306,11 +314,12 @@ inline void potrs( char uplo, blas_int_t n, blas_int_t nrhs, const complex<doubl
 
    zpotrs_( &uplo, &n, &nrhs, const_cast<ET*>( reinterpret_cast<const ET*>( A ) ),
             &lda, reinterpret_cast<ET*>( B ), &ldb, info
-#if !defined(INTEL_MKL_VERSION)
+#if !defined(INTEL_MKL_VERSION) && !defined(ACCELERATE_NEW_LAPACK)
           , blaze::fortran_charlen_t(1)
 #endif
           );
 }
+#endif
 //*************************************************************************************************
 
 } // namespace blaze

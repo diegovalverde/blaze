@@ -53,7 +53,7 @@
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-#if !defined(INTEL_MKL_VERSION)
+#if !defined(INTEL_MKL_VERSION) && !defined(ACCELERATE_NEW_LAPACK)
 extern "C" {
 
 void sormql_( char* side, char* trans, blaze::blas_int_t* m, blaze::blas_int_t* n,
@@ -146,13 +146,13 @@ inline void ormql( char side, char trans, blas_int_t m, blas_int_t n, blas_int_t
                    const float* A, blas_int_t lda, const float* tau, float* C, blas_int_t ldc,
                    float* work, blas_int_t lwork, blas_int_t* info )
 {
-#if defined(INTEL_MKL_VERSION)
+#if defined(INTEL_MKL_VERSION) && !defined(ACCELERATE_NEW_LAPACK)
    BLAZE_STATIC_ASSERT( sizeof( MKL_INT ) == sizeof( blas_int_t ) );
 #endif
 
    sormql_( &side, &trans, &m, &n, &k, const_cast<float*>( A ), &lda,
             const_cast<float*>( tau ), C, &ldc, work, &lwork, info
-#if !defined(INTEL_MKL_VERSION)
+#if !defined(INTEL_MKL_VERSION) && !defined(ACCELERATE_NEW_LAPACK)
           , blaze::fortran_charlen_t(1), blaze::fortran_charlen_t(1)
 #endif
           );
@@ -211,13 +211,13 @@ inline void ormql( char side, char trans, blas_int_t m, blas_int_t n, blas_int_t
                    const double* A, blas_int_t lda, const double* tau, double* C, blas_int_t ldc,
                    double* work, blas_int_t lwork, blas_int_t* info )
 {
-#if defined(INTEL_MKL_VERSION)
+#if defined(INTEL_MKL_VERSION) && !defined(ACCELERATE_NEW_LAPACK)
    BLAZE_STATIC_ASSERT( sizeof( MKL_INT ) == sizeof( blas_int_t ) );
 #endif
 
    dormql_( &side, &trans, &m, &n, &k, const_cast<double*>( A ), &lda,
             const_cast<double*>( tau ), C, &ldc, work, &lwork, info
-#if !defined(INTEL_MKL_VERSION)
+#if !defined(INTEL_MKL_VERSION) && !defined(ACCELERATE_NEW_LAPACK)
           , blaze::fortran_charlen_t(1), blaze::fortran_charlen_t(1)
 #endif
           );

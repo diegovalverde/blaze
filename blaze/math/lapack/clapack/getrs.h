@@ -54,7 +54,7 @@
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-#if !defined(INTEL_MKL_VERSION) && !defined(BLAS_H)
+#if !defined(INTEL_MKL_VERSION) && !defined(BLAS_H) && !defined(ACCELERATE_NEW_LAPACK)
 extern "C" {
 
 void sgetrs_( char* trans, blaze::blas_int_t* n, blaze::blas_int_t* nrhs, float* A,
@@ -96,7 +96,7 @@ void getrs( char trans, blas_int_t n, blas_int_t nrhs, const float* A,
 void getrs( char trans, blas_int_t n, blas_int_t nrhs, const double* A,
             blas_int_t lda, const blas_int_t* ipiv, double* B,
             blas_int_t ldb, blas_int_t* info );
-
+#ifndef ACCELERATE_NEW_LAPACK
 void getrs( char trans, blas_int_t n, blas_int_t nrhs, const complex<float>* A,
             blas_int_t lda, const blas_int_t* ipiv, complex<float>* B,
             blas_int_t ldb, blas_int_t* info );
@@ -104,6 +104,7 @@ void getrs( char trans, blas_int_t n, blas_int_t nrhs, const complex<float>* A,
 void getrs( char trans, blas_int_t n, blas_int_t nrhs, const complex<double>* A,
             blas_int_t lda, const blas_int_t* ipiv, complex<double>* B,
             blas_int_t ldb, blas_int_t* info );
+#endif
 //@}
 //*************************************************************************************************
 
@@ -151,13 +152,13 @@ inline void getrs( char trans, blas_int_t n, blas_int_t nrhs, const float* A,
                    blas_int_t lda, const blas_int_t* ipiv, float* B,
                    blas_int_t ldb, blas_int_t* info )
 {
-#if defined(INTEL_MKL_VERSION)
+#if defined(INTEL_MKL_VERSION) && !defined(ACCELERATE_NEW_LAPACK)
    BLAZE_STATIC_ASSERT( sizeof( MKL_INT ) == sizeof( blas_int_t ) );
 #endif
 
    sgetrs_( &trans, &n, &nrhs, const_cast<float*>( A ), &lda,
             const_cast<blas_int_t*>( ipiv ), B, &ldb, info
-#if !defined(INTEL_MKL_VERSION) && !defined(BLAS_H)
+#if !defined(INTEL_MKL_VERSION) && !defined(BLAS_H) && !defined(ACCELERATE_NEW_LAPACK)
           , blaze::fortran_charlen_t(1)
 #endif
           );
@@ -208,13 +209,13 @@ inline void getrs( char trans, blas_int_t n, blas_int_t nrhs, const double* A,
                    blas_int_t lda, const blas_int_t* ipiv, double* B,
                    blas_int_t ldb, blas_int_t* info )
 {
-#if defined(INTEL_MKL_VERSION)
+#if defined(INTEL_MKL_VERSION) && !defined(ACCELERATE_NEW_LAPACK)
    BLAZE_STATIC_ASSERT( sizeof( MKL_INT ) == sizeof( blas_int_t ) );
 #endif
 
    dgetrs_( &trans, &n, &nrhs, const_cast<double*>( A ), &lda,
             const_cast<blas_int_t*>( ipiv ), B, &ldb, info
-#if !defined(INTEL_MKL_VERSION) && !defined(BLAS_H)
+#if !defined(INTEL_MKL_VERSION) && !defined(BLAS_H) && !defined(ACCELERATE_NEW_LAPACK)
           , blaze::fortran_charlen_t(1)
 #endif
           );
@@ -261,6 +262,7 @@ inline void getrs( char trans, blas_int_t n, blas_int_t nrhs, const double* A,
 // is available and linked to the executable. Otherwise a call to this function will result in a
 // linker error.
 */
+#ifndef ACCELERATE_NEW_LAPACK
 inline void getrs( char trans, blas_int_t n, blas_int_t nrhs, const complex<float>* A,
                    blas_int_t lda, const blas_int_t* ipiv, complex<float>* B,
                    blas_int_t ldb, blas_int_t* info )
@@ -282,6 +284,7 @@ inline void getrs( char trans, blas_int_t n, blas_int_t nrhs, const complex<floa
 #endif
           );
 }
+#endif
 //*************************************************************************************************
 
 
@@ -324,6 +327,7 @@ inline void getrs( char trans, blas_int_t n, blas_int_t nrhs, const complex<floa
 // is available and linked to the executable. Otherwise a call to this function will result in a
 // linker error.
 */
+#ifndef ACCELERATE_NEW_LAPACK
 inline void getrs( char trans, blas_int_t n, blas_int_t nrhs, const complex<double>* A,
                    blas_int_t lda, const blas_int_t* ipiv, complex<double>* B,
                    blas_int_t ldb, blas_int_t* info )
@@ -345,6 +349,7 @@ inline void getrs( char trans, blas_int_t n, blas_int_t nrhs, const complex<doub
 #endif
           );
 }
+#endif
 //*************************************************************************************************
 
 } // namespace blaze

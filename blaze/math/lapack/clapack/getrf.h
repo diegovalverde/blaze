@@ -53,7 +53,7 @@
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-#if !defined(INTEL_MKL_VERSION) && !defined(BLAS_H)
+#if !defined(INTEL_MKL_VERSION) && !defined(BLAS_H) && !defined(ACCELERATE_NEW_LAPACK)
 extern "C" {
 
 void sgetrf_( blaze::blas_int_t* m, blaze::blas_int_t* n, float* A, blaze::blas_int_t* lda,
@@ -90,11 +90,13 @@ void getrf( blas_int_t m, blas_int_t n, float* A, blas_int_t lda,
 void getrf( blas_int_t m, blas_int_t n, double* A, blas_int_t lda,
             blas_int_t* ipiv, blas_int_t* info );
 
+#ifndef ACCELERATE_NEW_LAPACK
 void getrf( blas_int_t m, blas_int_t n, complex<float>* A, blas_int_t lda,
             blas_int_t* ipiv, blas_int_t* info );
 
 void getrf( blas_int_t m, blas_int_t n, complex<double>* A, blas_int_t lda,
             blas_int_t* ipiv, blas_int_t* info );
+#endif
 //@}
 //*************************************************************************************************
 
@@ -237,6 +239,7 @@ inline void getrf( blas_int_t m, blas_int_t n, double* A, blas_int_t lda,
 // is available and linked to the executable. Otherwise a call to this function will result in a
 // linker error.
 */
+#ifndef ACCELERATE_NEW_LAPACK
 inline void getrf( blas_int_t m, blas_int_t n, complex<float>* A, blas_int_t lda,
                    blas_int_t* ipiv, blas_int_t* info )
 {
@@ -252,6 +255,7 @@ inline void getrf( blas_int_t m, blas_int_t n, complex<float>* A, blas_int_t lda
 
    cgetrf_( &m, &n, reinterpret_cast<ET*>( A ), &lda, ipiv, info );
 }
+#endif
 //*************************************************************************************************
 
 
@@ -293,6 +297,7 @@ inline void getrf( blas_int_t m, blas_int_t n, complex<float>* A, blas_int_t lda
 // is available and linked to the executable. Otherwise a call to this function will result in a
 // linker error.
 */
+#ifndef ACCELERATE_NEW_LAPACK
 inline void getrf( blas_int_t m, blas_int_t n, complex<double>* A, blas_int_t lda,
                    blas_int_t* ipiv, blas_int_t* info )
 {
@@ -308,6 +313,7 @@ inline void getrf( blas_int_t m, blas_int_t n, complex<double>* A, blas_int_t ld
 
    zgetrf_( &m, &n, reinterpret_cast<ET*>( A ), &lda, ipiv, info );
 }
+#endif
 //*************************************************************************************************
 
 } // namespace blaze

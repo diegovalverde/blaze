@@ -54,7 +54,7 @@
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-#if !defined(INTEL_MKL_VERSION)
+#if !defined(INTEL_MKL_VERSION) && !defined(ACCELERATE_NEW_LAPACK)
 extern "C" {
 
 void chesv_( char* uplo, blaze::blas_int_t* n, blaze::blas_int_t* nrhs, float* A,
@@ -85,6 +85,8 @@ namespace blaze {
 //*************************************************************************************************
 /*!\name LAPACK Hermitian indefinite linear system functions (hesv) */
 //@{
+#ifndef ACCELERATE_NEW_LAPACK
+
 void hesv( char uplo, blas_int_t n, blas_int_t nrhs, complex<float>* A, blas_int_t lda,
            blas_int_t* ipiv, complex<float>* B, blas_int_t ldb, complex<float>* work,
            blas_int_t lwork, blas_int_t* info );
@@ -92,6 +94,7 @@ void hesv( char uplo, blas_int_t n, blas_int_t nrhs, complex<float>* A, blas_int
 void hesv( char uplo, blas_int_t n, blas_int_t nrhs, complex<double>* A, blas_int_t lda,
            blas_int_t* ipiv, complex<double>* B, blas_int_t ldb, complex<double>* work,
            blas_int_t lwork, blas_int_t* info );
+#endif
 //@}
 //*************************************************************************************************
 
@@ -145,6 +148,7 @@ void hesv( char uplo, blas_int_t n, blas_int_t nrhs, complex<double>* A, blas_in
 // is available and linked to the executable. Otherwise a call to this function will result in a
 // linker error.
 */
+#ifndef ACCELERATE_NEW_LAPACK
 inline void hesv( char uplo, blas_int_t n, blas_int_t nrhs, complex<float>* A, blas_int_t lda,
                   blas_int_t* ipiv, complex<float>* B, blas_int_t ldb, complex<float>* work,
                   blas_int_t lwork, blas_int_t* info )
@@ -166,6 +170,7 @@ inline void hesv( char uplo, blas_int_t n, blas_int_t nrhs, complex<float>* A, b
 #endif
          );
 }
+#endif
 //*************************************************************************************************
 
 
@@ -218,6 +223,7 @@ inline void hesv( char uplo, blas_int_t n, blas_int_t nrhs, complex<float>* A, b
 // is available and linked to the executable. Otherwise a call to this function will result in a
 // linker error.
 */
+#ifndef ACCELERATE_NEW_LAPACK
 inline void hesv( char uplo, blas_int_t n, blas_int_t nrhs, complex<double>* A, blas_int_t lda,
                   blas_int_t* ipiv, complex<double>* B, blas_int_t ldb, complex<double>* work,
                   blas_int_t lwork, blas_int_t* info )
@@ -239,6 +245,7 @@ inline void hesv( char uplo, blas_int_t n, blas_int_t nrhs, complex<double>* A, 
 #endif
          );
 }
+#endif
 //*************************************************************************************************
 
 } // namespace blaze

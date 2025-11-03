@@ -55,7 +55,9 @@ namespace blaze {
 /*!\brief Signed integer type used in the BLAS/LAPACK wrapper functions.
 // \ingroup math
 */
-#if BLAZE_BLAS_IS_64BIT && ACCELERATE_NEW_LAPACK && ACCELERATE_LAPACK_ILP64
+
+
+#if ACCELERATE_NEW_LAPACK && ACCELERATE_LAPACK_ILP64 && BLAZE_BLAS_IS_64BIT
 #warning "Diego using apple accelerate"
 using blas_int_t = __LAPACK_int;
 #elif BLAZE_BLAS_IS_64BIT && ( defined(INTEL_MKL_VERSION) || defined(MKL_ILP64) )
@@ -65,6 +67,8 @@ using blas_int_t = int64_t;
 #else
 using blas_int_t = int32_t;
 #endif
+
+
 //*************************************************************************************************
 
 } // namespace blaze

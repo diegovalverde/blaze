@@ -53,7 +53,7 @@
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-#if !defined(INTEL_MKL_VERSION)
+#if !defined(INTEL_MKL_VERSION) && !defined(ACCELERATE_NEW_LAPACK)
 extern "C" {
 
 void sgetri_( blaze::blas_int_t* n, float* A, blaze::blas_int_t* lda, blaze::blas_int_t* ipiv,
@@ -89,12 +89,13 @@ void getri( blas_int_t n, float* A, blas_int_t lda, const blas_int_t* ipiv,
 
 void getri( blas_int_t n, double* A, blas_int_t lda, const blas_int_t* ipiv,
             double* work, blas_int_t lwork, blas_int_t* info );
-
+#ifndef ACCELERATE_NEW_LAPACK
 void getri( blas_int_t n, complex<float>* A, blas_int_t lda, const blas_int_t* ipiv,
             complex<float>* work, blas_int_t lwork, blas_int_t* info );
 
 void getri( blas_int_t n, complex<double>* A, blas_int_t lda, const blas_int_t* ipiv,
             complex<double>* work, blas_int_t lwork, blas_int_t* info );
+#endif
 //@}
 //*************************************************************************************************
 
@@ -231,6 +232,7 @@ inline void getri( blas_int_t n, double* A, blas_int_t lda, const blas_int_t* ip
 // is available and linked to the executable. Otherwise a call to this function will result in a
 // linker error.
 */
+#ifndef ACCELERATE_NEW_LAPACK
 inline void getri( blas_int_t n, complex<float>* A, blas_int_t lda, const blas_int_t* ipiv,
                    complex<float>* work, blas_int_t lwork, blas_int_t* info )
 {
@@ -247,6 +249,7 @@ inline void getri( blas_int_t n, complex<float>* A, blas_int_t lda, const blas_i
    cgetri_( &n, reinterpret_cast<ET*>( A ), &lda, const_cast<blas_int_t*>( ipiv ),
             reinterpret_cast<ET*>( work ), &lwork, info );
 }
+#endif
 //*************************************************************************************************
 
 
@@ -286,6 +289,7 @@ inline void getri( blas_int_t n, complex<float>* A, blas_int_t lda, const blas_i
 // is available and linked to the executable. Otherwise a call to this function will result in a
 // linker error.
 */
+#ifndef ACCELERATE_NEW_LAPACK
 inline void getri( blas_int_t n, complex<double>* A, blas_int_t lda, const blas_int_t* ipiv,
                    complex<double>* work, blas_int_t lwork, blas_int_t* info )
 {
@@ -302,6 +306,7 @@ inline void getri( blas_int_t n, complex<double>* A, blas_int_t lda, const blas_
    zgetri_( &n, reinterpret_cast<ET*>( A ), &lda, const_cast<blas_int_t*>( ipiv ),
             reinterpret_cast<ET*>( work ), &lwork, info );
 }
+#endif
 //*************************************************************************************************
 
 } // namespace blaze
