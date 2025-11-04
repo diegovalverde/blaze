@@ -326,7 +326,11 @@
 //*************************************************************************************************
 
 
-
+#if BLAZE_USE_VECTORIZATION && defined(__ARM_NEON)
+#  define BLAZE_NEON_MODE 1
+#else
+#  define BLAZE_NEON_MODE 0
+#endif
 
 //=================================================================================================
 //
@@ -343,7 +347,7 @@
 // linear algebra operations by SVML intrinsics. In case the SVML mode is disabled, the
 // Blaze library chooses default, non-vectorized functionality for the operations.
 */
-#if BLAZE_USE_VECTORIZATION && ( defined(__INTEL_COMPILER) || defined(__ICL) || defined(__ICC) || defined(__ECC) )
+#if BLAZE_USE_VECTORIZATION && (defined(__INTEL_COMPILER) || defined(__ICL) || defined(__ICC) || defined(__ECC) )
 #  define BLAZE_SVML_MODE 1
 #else
 #  define BLAZE_SVML_MODE 0

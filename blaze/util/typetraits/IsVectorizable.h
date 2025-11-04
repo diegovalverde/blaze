@@ -69,6 +69,7 @@ struct IsVectorizableHelper
                                  ( ( bool( BLAZE_SSE_MODE      ) && IsFloat_v<T>   ) ||
                                    ( bool( BLAZE_SSE2_MODE     ) && IsNumeric_v<T> ) ||
                                    ( bool( BLAZE_AVX512BW_MODE ) && IsNumeric_v<T> ) ||
+                                   ( bool( BLAZE_NEON_MODE     ) && IsNumeric_v<T> ) ||
                                    ( bool( BLAZE_AVX512F_MODE || BLAZE_MIC_MODE )
                                      && IsNumeric_v<T> && sizeof(T) >= 4UL ) );
    //**********************************************************************************************
