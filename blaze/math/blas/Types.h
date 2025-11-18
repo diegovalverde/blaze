@@ -57,7 +57,7 @@ namespace blaze {
 */
 
 
-#if ACCELERATE_NEW_LAPACK && ACCELERATE_LAPACK_ILP64 && BLAZE_BLAS_IS_64BIT
+#if ACCELERATE_NEW_LAPACK && ACCELERATE_LAPACK_ILP64
 #warning "Diego using apple accelerate"
 using blas_int_t = __LAPACK_int;
 #elif BLAZE_BLAS_IS_64BIT && ( defined(INTEL_MKL_VERSION) || defined(MKL_ILP64) )

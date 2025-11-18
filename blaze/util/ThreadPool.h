@@ -680,7 +680,7 @@ void ThreadPool<TT,MT,LT,CT>::resize( size_t n, bool block )
             (*thread)->join();
             thread = threads_.erase( thread );
          }
-         else ++thread;
+         else thread = thread + 1;
       }
    }
 }
@@ -749,9 +749,9 @@ template< typename TT    // Type of the encapsulated thread
 void ThreadPool<TT,MT,LT,CT>::createThread()
 {
    threads_.push_back( std::unique_ptr<ManagedThread>( new ManagedThread( this ) ) );
-   ++total_;
-   ++expected_;
-   ++active_;
+   total_ = total_ + 1;
+   expected_ = expected_ + 1;
+   active_ = active_ + 1;
 }
 //*************************************************************************************************
 
@@ -779,16 +779,16 @@ bool ThreadPool<TT,MT,LT,CT>::executeTask()
 
       while( taskqueue_.isEmpty() )
       {
-         --active_;
+         active_ = active_ - 1;
          waitForThread_.notify_all();
 
          if( total_ > expected_ ) {
-            --total_;
+            total_ = total_ - 1;
             return false;
          }
 
          waitForTask_.wait( lock );
-         ++active_;
+         active_ = active_ + 1;
       }
 
       BLAZE_INTERNAL_ASSERT( !taskqueue_.isEmpty(), "Empty task queue detected" );
