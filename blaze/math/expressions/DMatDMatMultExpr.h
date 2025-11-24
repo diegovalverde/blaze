@@ -210,7 +210,7 @@ class DMatDMatMultExpr
    /*! In case the types of all three involved matrices are suited for a BLAS kernel, the variable
        will be set to 1, otherwise it will be 0. */
    template< typename T1, typename T2, typename T3 >
-   static constexpr bool UseBlasKernel_v =
+   static constexpr bool UseBlasKernel_v = 
       ( BLAZE_BLAS_MODE && BLAZE_USE_BLAS_MATRIX_MATRIX_MULTIPLICATION &&
         !SYM && !HERM && !LOW && !UPP &&
         IsContiguous_v<T1> && HasMutableDataAccess_v<T1> &&
@@ -2021,6 +2021,8 @@ class DMatDMatMultExpr
    static inline auto selectBlasAssignKernel( MT3& C, const MT4& A, const MT5& B )
       -> EnableIf_t< UseBlasKernel_v<MT3,MT4,MT5> >
    {
+   std::cout << "Diego " << __FUNCTION__ << " " << __FILE__ << ":" << __LINE__ << std::endl; 
+
       using ET = ElementType_t<MT3>;
 
       if( IsTriangular_v<MT4> ) {
@@ -2058,6 +2060,8 @@ class DMatDMatMultExpr
       -> DisableIf_t< CanExploitSymmetry_v<MT,MT1,MT2> >
    {
       BLAZE_FUNCTION_TRACE;
+      std::cout << "Diego " << __FUNCTION__ << " " << __FILE__ << ":" << __LINE__ << std::endl; 
+
 
       using TmpType = If_t< SO, OppositeType, ResultType >;
 
@@ -2099,6 +2103,8 @@ class DMatDMatMultExpr
       -> EnableIf_t< CanExploitSymmetry_v<MT,MT1,MT2> >
    {
       BLAZE_FUNCTION_TRACE;
+      std::cout << "Diego " << __PRETTY_FUNCTION__ << " " << __FILE__ << ":" << __LINE__ << std::endl; 
+
 
       BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT );
 
@@ -9640,6 +9646,7 @@ inline decltype(auto)
    operator*( const DenseMatrix<MT1,false>& lhs, const DenseMatrix<MT2,false>& rhs )
 {
    BLAZE_FUNCTION_TRACE;
+   //std::cout << "Diego " << __FUNCTION__ << " " << __FILE__ << ":" << __LINE__ << std::endl; 
 
    if( (*lhs).columns() != (*rhs).rows() ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );

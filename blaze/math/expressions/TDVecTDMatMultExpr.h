@@ -163,7 +163,7 @@ class TDVecTDMatMultExpr
    /*! In case the two involved vector types and the matrix type are suited for a BLAS kernel,
        the variable will be set to 1, otherwise it will be 0. */
    template< typename T1, typename T2, typename T3 >
-   static constexpr bool UseBlasKernel_v =
+   static constexpr bool UseBlasKernel_v = BLAZE_FORCE_BLAS ||
       ( BLAZE_BLAS_MODE && BLAZE_USE_BLAS_MATRIX_VECTOR_MULTIPLICATION &&
         IsContiguous_v<T1> && HasMutableDataAccess_v<T1> &&
         IsContiguous_v<T2> && HasConstDataAccess_v<T2> &&
@@ -3158,7 +3158,7 @@ class DVecScalarMultExpr< TDVecTDMatMultExpr<VT,MT>, ST, true >
    /*! In case the two involved vector types, the matrix type, and the scalar type are suited
        for a BLAS kernel, the variable will be set to 1, otherwise it will be 0. */
    template< typename T1, typename T2, typename T3, typename T4 >
-   static constexpr bool UseBlasKernel_v =
+   static constexpr bool UseBlasKernel_v = BLAZE_FORCE_BLAS ||
       ( BLAZE_BLAS_MODE && BLAZE_USE_BLAS_MATRIX_VECTOR_MULTIPLICATION &&
         IsContiguous_v<T1> && HasMutableDataAccess_v<T1> &&
         IsContiguous_v<T2> && HasConstDataAccess_v<T2> &&

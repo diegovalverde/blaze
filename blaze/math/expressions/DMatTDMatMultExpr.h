@@ -188,7 +188,7 @@ class DMatTDMatMultExpr
    /*! In case the types of all three involved matrices are suited for a BLAS kernel, the variable
        will be set to 1, otherwise it will be 0. */
    template< typename T1, typename T2, typename T3 >
-   static constexpr bool UseBlasKernel_v =
+   static constexpr bool UseBlasKernel_v = BLAZE_FORCE_BLAS ||
       ( BLAZE_BLAS_MODE && BLAZE_USE_BLAS_MATRIX_MATRIX_MULTIPLICATION &&
         !SYM && !HERM && !LOW && !UPP &&
         IsContiguous_v<T1> && HasMutableDataAccess_v<T1> &&
@@ -2746,6 +2746,8 @@ class DMatTDMatMultExpr
    static inline auto selectBlasAssignKernel( MT3& C, const MT4& A, const MT5& B )
       -> DisableIf_t< UseBlasKernel_v<MT3,MT4,MT5> >
    {
+      std::cout << "Diego " << __PRETTY_FUNCTION__ << " " << __FILE__ << ":" << __LINE__ << std::endl; 
+
       selectLargeAssignKernel( C, A, B );
    }
    /*! \endcond */
@@ -6698,7 +6700,7 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, false >
    /*! In case the types of all three involved matrices and the scalar type are suited for a BLAS
        kernel, the variable will be set to 1, otherwise it will be 0. */
    template< typename T1, typename T2, typename T3, typename T4 >
-   static constexpr bool UseBlasKernel_v =
+   static constexpr bool UseBlasKernel_v = BLAZE_FORCE_BLAS ||
       ( BLAZE_BLAS_MODE && BLAZE_USE_BLAS_MATRIX_MATRIX_MULTIPLICATION &&
         !SYM && !HERM && !LOW && !UPP &&
         IsContiguous_v<T1> && HasMutableDataAccess_v<T1> &&

@@ -116,6 +116,16 @@ inline void gemv( CBLAS_ORDER order, CBLAS_TRANSPOSE transA, blas_int_t m, blas_
                   float alpha, const float* A, blas_int_t lda, const float* x,
                   blas_int_t incX, float beta, float* y, blas_int_t incY )
 {
+   #ifndef DEBUG_INSTRUMENTATION
+   std::cerr << __FILE__ << " order " << ((order == CblasRowMajor) ? "rowMajor " : "colMajor ") 
+             << ((transA == CblasNoTrans) ? "A: noTrans ": "A: Trans")
+             << " m  " << m
+             << " n  " << n
+             << std::endl;
+   #else
+   std::cerr << "*";
+   #endif
+
    cblas_sgemv( order, transA, m, n, alpha, A, lda, x, incX, beta, y, incY );
 }
 #endif

@@ -34,7 +34,7 @@
 
 #ifndef _BLAZE_MATH_BLAS_CBLAS_GEMM_H_
 #define _BLAZE_MATH_BLAS_CBLAS_GEMM_H_
-
+#include <iostream>
 
 //*************************************************************************************************
 // Includes
@@ -120,7 +120,34 @@ inline void gemm( CBLAS_ORDER order, CBLAS_TRANSPOSE transA, CBLAS_TRANSPOSE tra
                   blas_int_t lda, const float* B, blas_int_t ldb, float beta, float* C,
                   blas_int_t ldc )
 {
+   // #ifndef DEBUG_INSTRUMENTATION
+   // std::cerr << __FILE__ << " order " << ((order == CblasRowMajor) ? "rowMajor " : "colMajor ") 
+   //           << ((transA == CblasNoTrans) ? "A: noTrans ": "A: Trans")
+   //           << ((transB == CblasNoTrans) ? "B: noTrans ": "B: Trans")
+   //           << " m  " << m
+   //           << " n  " << n
+   //           << " k  " << k
+   //           << " lda " << lda
+   //           << " ldb " << ldb
+   //           << " ldc " << ldc
+   //            << " alpha " << alpha
+   //            << " beta " << beta
+   //           << std::endl;
+   // // #else
+   // // std::cerr << "*";
+   // #endif
+
+   
+   
+   auto t0 = std::chrono::high_resolution_clock::now();
+
    cblas_sgemm( order, transA, transB, m, n, k, alpha, A, lda, B, ldb, beta, C, ldc );
+
+  auto t1 = std::chrono::high_resolution_clock::now();
+//   std::cerr << "Gemm took "
+//             << std::chrono::duration_cast<std::chrono::milliseconds>(t1-t0).count()
+//             << " milliseconds!\n";
+
 }
 #endif
 //*************************************************************************************************

@@ -67,6 +67,14 @@
 #ifndef BLAZE_BLAS_MODE
 #define BLAZE_BLAS_MODE 0
 #endif
+
+#ifndef BLAZE_FORCE_BLAS
+#define BLAZE_FORCE_BLAS 0
+#else
+#warning "Forcing BLAS is dangerous, enjoy"
+#endif
+
+
 //*************************************************************************************************
 
 
@@ -133,7 +141,7 @@
    \endcode
 */
 #ifndef BLAZE_BLAS_IS_PARALLEL
-#define BLAZE_BLAS_IS_PARALLEL 0
+#define BLAZE_BLAS_IS_PARALLEL 1
 #endif
 //*************************************************************************************************
 
