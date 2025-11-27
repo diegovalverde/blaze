@@ -36,6 +36,10 @@
 #define _BLAZE_MATH_BLAS_CBLAS_GEMM_H_
 #include <iostream>
 
+#ifdef USE_APPLE_METAL
+#include "mlx/mlx_gemm.h"
+#endif
+
 //*************************************************************************************************
 // Includes
 //*************************************************************************************************
@@ -137,16 +141,31 @@ inline void gemm( CBLAS_ORDER order, CBLAS_TRANSPOSE transA, CBLAS_TRANSPOSE tra
    // // std::cerr << "*";
    // #endif
 
-   
+   #if USE_APPLE_METAL
+      if (order == CblasRowMajor && transA == CblasNoTrans && transB == CblasNoTrans){
+         auto t0 = std::chrono::high_resolution_clock::now();
+         mlx_sgemm( m, n, k, alpha, A, lda, B, ldb, beta, C, ldc );
+         auto t1 = std::chrono::high_resolution_clock::now();
+
+            // std::cerr << "METAL Gemm took "
+            // << std::chrono::duration_cast<std::chrono::milliseconds>(t1-t0).count()
+            // << " milliseconds!\n";
+      } else {
+         cblas_sgemm( order, transA, transB, m, n, k, alpha, A, lda, B, ldb, beta, C, ldc );
+
+      }
+   #else
    
    auto t0 = std::chrono::high_resolution_clock::now();
 
    cblas_sgemm( order, transA, transB, m, n, k, alpha, A, lda, B, ldb, beta, C, ldc );
 
   auto t1 = std::chrono::high_resolution_clock::now();
-//   std::cerr << "Gemm took "
+  //   std::cerr << "Gemm took "
 //             << std::chrono::duration_cast<std::chrono::milliseconds>(t1-t0).count()
 //             << " milliseconds!\n";
+  #endif
+
 
 }
 #endif

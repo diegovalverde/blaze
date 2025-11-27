@@ -562,7 +562,7 @@ class TDMatTDMatMultExpr
           ( !BLAZE_DEBUG_MODE && A.rows() <= SIMDSIZE*10UL ) ||
           ( C.rows() * C.columns() < TDMATTDMATMULT_THRESHOLD ) )
          selectSmallAssignKernel( C, A, B );
-      else
+      else // Diego HERE 
          selectBlasAssignKernel( C, A, B );
    }
    /*! \endcond */

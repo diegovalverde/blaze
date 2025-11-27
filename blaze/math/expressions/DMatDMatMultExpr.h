@@ -560,11 +560,13 @@ class DMatDMatMultExpr
            , typename MT5 >  // Type of the right-hand side matrix operand
    static inline void selectAssignKernel( MT3& C, const MT4& A, const MT5& B )
    {
+      #ifndef BLAZE_FORCE_BLAS
       if( ( IsDiagonal_v<MT5> ) ||
           ( !BLAZE_DEBUG_MODE && B.columns() <= SIMDSIZE*10UL ) ||
           ( C.rows() * C.columns() < DMATDMATMULT_THRESHOLD ) )
          selectSmallAssignKernel( C, A, B );
       else
+      #endif
          selectBlasAssignKernel( C, A, B );
    }
    /*! \endcond */
@@ -2021,7 +2023,7 @@ class DMatDMatMultExpr
    static inline auto selectBlasAssignKernel( MT3& C, const MT4& A, const MT5& B )
       -> EnableIf_t< UseBlasKernel_v<MT3,MT4,MT5> >
    {
-   std::cout << "Diego " << __FUNCTION__ << " " << __FILE__ << ":" << __LINE__ << std::endl; 
+   // std::cout << "Diego " << __FUNCTION__ << " " << __FILE__ << ":" << __LINE__ << std::endl; 
 
       using ET = ElementType_t<MT3>;
 
