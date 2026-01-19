@@ -45,6 +45,7 @@
 #include <blaze/math/blas/dotu.h>
 #include <blaze/math/blas/gemm.h>
 #include <blaze/math/blas/gemv.h>
+#include <blaze/math/blas/q8_gemm.h>
 #include <blaze/math/blas/trmm.h>
 #include <blaze/math/blas/trmv.h>
 #include <blaze/math/blas/trsm.h>

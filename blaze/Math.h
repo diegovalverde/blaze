@@ -61,6 +61,7 @@
 #include <blaze/math/InitializerMatrix.h>
 #include <blaze/math/InitializerVector.h>
 #include <blaze/math/InversionFlag.h>
+#include <blaze/math/Q8Matrix.h>
 #include <blaze/math/HermitianMatrix.h>
 #include <blaze/math/HybridMatrix.h>
 #include <blaze/math/HybridVector.h>

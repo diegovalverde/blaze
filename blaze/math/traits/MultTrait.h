@@ -42,10 +42,12 @@
 
 #include <utility>
 #include <blaze/math/GroupTag.h>
+#include <blaze/math/blas/q8_gemm.h>
 #include <blaze/math/typetraits/IsColumnVector.h>
 #include <blaze/math/typetraits/IsRowVector.h>
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/typetraits/CommonType.h>
+#include <blaze/util/typetraits/IsFloatingPoint.h>
 #include <blaze/util/typetraits/IsNumeric.h>
 #include <blaze/util/typetraits/RemoveCVRef.h>
 #include <blaze/util/typetraits/Void.h>
@@ -143,6 +145,25 @@ struct MultTrait< T1, T2, EnableIf_t< IsNumeric_v<T1> && IsNumeric_v<T2> > >
    //**********************************************************************************************
    using Type = CommonType_t<T1,T2>;
    //**********************************************************************************************
+};
+/*! \endcond */
+//*************************************************************************************************
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Specialization for multiplication between floating point and q8_0 block types. */
+template< typename T >
+struct MultTrait< T, q8_0::block_q8_0, EnableIf_t< IsFloatingPoint_v<T> > >
+{
+ public:
+   using Type = T;
+};
+
+template< typename T >
+struct MultTrait< q8_0::block_q8_0, T, EnableIf_t< IsFloatingPoint_v<T> > >
+{
+ public:
+   using Type = T;
 };
 /*! \endcond */
 //*************************************************************************************************

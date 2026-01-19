@@ -41,6 +41,7 @@
 //*************************************************************************************************
 
 #include <blaze/math/blas/gemm.h>
+#include <blaze/math/blas/q8_gemm.h>
 #include <blaze/math/blas/trmm.h>
 #include <blaze/math/Aliases.h>
 #include <blaze/math/constraints/ColumnMajorMatrix.h>
@@ -92,6 +93,7 @@
 #include <blaze/math/typetraits/IsPadded.h>
 #include <blaze/math/typetraits/IsResizable.h>
 #include <blaze/math/typetraits/IsRowMajorMatrix.h>
+#include <blaze/math/typetraits/IsQ8_0Matrix.h>
 #include <blaze/math/typetraits/IsSIMDCombinable.h>
 #include <blaze/math/typetraits/IsStrictlyLower.h>
 #include <blaze/math/typetraits/IsStrictlyTriangular.h>
@@ -118,6 +120,7 @@
 #include <blaze/util/mpl/If.h>
 #include <blaze/util/Types.h>
 #include <blaze/util/typetraits/IsBuiltin.h>
+#include <blaze/util/typetraits/IsFloatingPoint.h>
 #include <blaze/util/typetraits/IsComplex.h>
 #include <blaze/util/typetraits/IsComplexDouble.h>
 #include <blaze/util/typetraits/IsComplexFloat.h>
@@ -555,6 +558,44 @@ class DMatDMatMultExpr
    // \param B The right-hand side multiplication operand.
    // \return void
    */
+   template< typename MT3    // Type of the left-hand side target matrix
+           , typename MT4    // Type of the left-hand side matrix operand
+           , typename MT5 >  // Type of the right-hand side matrix operand
+   static inline auto selectAssignKernel( MT3& C, const MT4& A, const MT5& B )
+      -> EnableIf_t< IsQ8_0TransExpr_v<MT5> >
+   {
+      if( !IsRowMajorMatrix_v<MT3> || !IsRowMajorMatrix_v<MT4> ) {
+         selectDefaultAssignKernel( C, A, B );
+         return;
+      }
+
+      using BOp = typename MT5::Operand;
+      const BOp& Bq = B.operand();
+
+      const size_t M( A.rows() );
+      const size_t N( B.columns() );
+      const size_t K( A.columns() );
+
+      BLAZE_INTERNAL_ASSERT( Bq.columns() == K, "Invalid q8_0 k dimension" );
+      BLAZE_INTERNAL_ASSERT( Bq.rows() == N, "Invalid q8_0 n dimension" );
+      BLAZE_INTERNAL_ASSERT( ( K % 32UL ) == 0UL, "q8_0 K must be multiple of 32" );
+
+      if( !IsFloatingPoint_v< ElementType_t<MT3> > ||
+          !IsFloatingPoint_v< ElementType_t<MT4> > ) {
+         selectDefaultAssignKernel( C, A, B );
+         return;
+      }
+
+      const float* Aptr = A.data();
+      const size_t lda = A.spacing();
+      const q8_0::block_q8_0* Bptr = Bq.data();
+      const size_t ldb = K / 32UL;
+      float* Cptr = C.data();
+      const size_t ldc = C.spacing();
+
+      q8_0::sgemm_nt( M, N, K, 1.0f, Aptr, lda, Bptr, ldb, 0.0f, Cptr, ldc );
+   }
+
    template< typename MT3    // Type of the left-hand side target matrix
            , typename MT4    // Type of the left-hand side matrix operand
            , typename MT5 >  // Type of the right-hand side matrix operand

@@ -41,6 +41,7 @@
 //*************************************************************************************************
 
 #include <blaze/math/blas/gemm.h>
+#include <blaze/math/blas/q8_gemm.h>
 #include <blaze/math/blas/trmm.h>
 #include <blaze/math/Aliases.h>
 #include <blaze/math/constraints/ColumnMajorMatrix.h>
@@ -88,6 +89,7 @@
 #include <blaze/math/typetraits/IsLower.h>
 #include <blaze/math/typetraits/IsPadded.h>
 #include <blaze/math/typetraits/IsRowMajorMatrix.h>
+#include <blaze/math/typetraits/IsQ8_0Matrix.h>
 #include <blaze/math/typetraits/IsSIMDCombinable.h>
 #include <blaze/math/typetraits/IsStrictlyLower.h>
 #include <blaze/math/typetraits/IsStrictlyUpper.h>
@@ -111,6 +113,8 @@
 #include <blaze/util/mpl/If.h>
 #include <blaze/util/Types.h>
 #include <blaze/util/typetraits/IsBuiltin.h>
+#include <blaze/util/typetraits/RemoveCVRef.h>
+#include <blaze/util/typetraits/IsFloatingPoint.h>
 #include <blaze/util/typetraits/IsComplex.h>
 #include <blaze/util/typetraits/IsComplexDouble.h>
 #include <blaze/util/typetraits/IsComplexFloat.h>
@@ -188,7 +192,7 @@ class DMatTDMatMultExpr
    /*! In case the types of all three involved matrices are suited for a BLAS kernel, the variable
        will be set to 1, otherwise it will be 0. */
    template< typename T1, typename T2, typename T3 >
-   static constexpr bool UseBlasKernel_v = BLAZE_FORCE_BLAS ||
+   static constexpr bool UseBlasKernel_v = ( BLAZE_FORCE_BLAS ||
       ( BLAZE_BLAS_MODE && BLAZE_USE_BLAS_MATRIX_MATRIX_MULTIPLICATION &&
         !SYM && !HERM && !LOW && !UPP &&
         IsContiguous_v<T1> && HasMutableDataAccess_v<T1> &&
@@ -200,7 +204,8 @@ class DMatTDMatMultExpr
         IsBLASCompatible_v< ElementType_t<T2> > &&
         IsBLASCompatible_v< ElementType_t<T3> > &&
         IsSame_v< ElementType_t<T1>, ElementType_t<T2> > &&
-        IsSame_v< ElementType_t<T1>, ElementType_t<T3> > );
+        IsSame_v< ElementType_t<T1>, ElementType_t<T3> > ) ) &&
+      !IsSame_v< RemoveCVRef_t<ElementType_t<T3>>, q8_0::block_q8_0 >;
    /*! \endcond */
    //**********************************************************************************************
 
@@ -506,17 +511,48 @@ class DMatTDMatMultExpr
          return;
       }
 
-      LT A( serial( rhs.lhs_ ) );  // Evaluation of the left-hand side dense matrix operand
-      RT B( serial( rhs.rhs_ ) );  // Evaluation of the right-hand side dense matrix operand
+      if constexpr ( IsSame_v< RemoveCVRef_t<ElementType_t<MT2>>, q8_0::block_q8_0 > )
+      {
+         BLAZE_STATIC_ASSERT( IsRowMajorMatrix_v<MT> );
+         BLAZE_STATIC_ASSERT( IsRowMajorMatrix_v<MT1> );
+         BLAZE_STATIC_ASSERT( IsFloatingPoint_v< ElementType_t<MT> > );
+         BLAZE_STATIC_ASSERT( IsFloatingPoint_v< ElementType_t<MT1> > );
 
-      BLAZE_INTERNAL_ASSERT( A.rows()    == rhs.lhs_.rows()   , "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( A.columns() == rhs.lhs_.columns(), "Invalid number of columns" );
-      BLAZE_INTERNAL_ASSERT( B.rows()    == rhs.rhs_.rows()   , "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( B.columns() == rhs.rhs_.columns(), "Invalid number of columns" );
-      BLAZE_INTERNAL_ASSERT( A.rows()    == (*lhs).rows()     , "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( B.columns() == (*lhs).columns()  , "Invalid number of columns" );
+         LT A( serial( rhs.lhs_ ) );
+         const auto& Bexpr = rhs.rhs_;
+         const auto& Bq = Bexpr.operand();
 
-      DMatTDMatMultExpr::selectAssignKernel( *lhs, A, B );
+         const size_t M( A.rows() );
+         const size_t N( Bexpr.columns() );
+         const size_t K( A.columns() );
+
+         BLAZE_INTERNAL_ASSERT( Bq.columns() == K, "Invalid q8_0 k dimension" );
+         BLAZE_INTERNAL_ASSERT( Bq.rows() == N, "Invalid q8_0 n dimension" );
+         BLAZE_INTERNAL_ASSERT( ( K % 32UL ) == 0UL, "q8_0 K must be multiple of 32" );
+
+         const float* Aptr = A.data();
+         const size_t lda = A.spacing();
+         const q8_0::block_q8_0* Bptr = Bq.data();
+         const size_t ldb = K / 32UL;
+         float* Cptr = (*lhs).data();
+         const size_t ldc = (*lhs).spacing();
+
+         q8_0::sgemm_nt( M, N, K, 1.0f, Aptr, lda, Bptr, ldb, 0.0f, Cptr, ldc );
+         return;
+      }
+      else {
+         LT A( serial( rhs.lhs_ ) );  // Evaluation of the left-hand side dense matrix operand
+         RT B( serial( rhs.rhs_ ) );  // Evaluation of the right-hand side dense matrix operand
+
+         BLAZE_INTERNAL_ASSERT( A.rows()    == rhs.lhs_.rows()   , "Invalid number of rows"    );
+         BLAZE_INTERNAL_ASSERT( A.columns() == rhs.lhs_.columns(), "Invalid number of columns" );
+         BLAZE_INTERNAL_ASSERT( B.rows()    == rhs.rhs_.rows()   , "Invalid number of rows"    );
+         BLAZE_INTERNAL_ASSERT( B.columns() == rhs.rhs_.columns(), "Invalid number of columns" );
+         BLAZE_INTERNAL_ASSERT( A.rows()    == (*lhs).rows()     , "Invalid number of rows"    );
+         BLAZE_INTERNAL_ASSERT( B.columns() == (*lhs).columns()  , "Invalid number of columns" );
+
+         DMatTDMatMultExpr::selectAssignKernel( *lhs, A, B );
+      }
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -537,11 +573,41 @@ class DMatTDMatMultExpr
            , typename MT5 >  // Type of the right-hand side matrix operand
    static inline void selectAssignKernel( MT3& C, const MT4& A, const MT5& B )
    {
-      if( ( IsDiagonal_v<MT4> || IsDiagonal_v<MT5> ) ||
-          ( C.rows() * C.columns() < DMATTDMATMULT_THRESHOLD ) )
-         selectSmallAssignKernel( C, A, B );
-      else
-         selectBlasAssignKernel( C, A, B );
+      if constexpr ( IsSame_v< RemoveCVRef_t<ElementType_t<MT5>>, q8_0::block_q8_0 > )
+      {
+         BLAZE_STATIC_ASSERT( IsRowMajorMatrix_v<MT3> );
+         BLAZE_STATIC_ASSERT( IsRowMajorMatrix_v<MT4> );
+         BLAZE_STATIC_ASSERT( IsFloatingPoint_v< ElementType_t<MT3> > );
+         BLAZE_STATIC_ASSERT( IsFloatingPoint_v< ElementType_t<MT4> > );
+
+         using BOp = typename MT5::Operand;
+         const BOp& Bq = B.operand();
+
+         const size_t M( A.rows() );
+         const size_t N( B.columns() );
+         const size_t K( A.columns() );
+
+         BLAZE_INTERNAL_ASSERT( Bq.columns() == K, "Invalid q8_0 k dimension" );
+         BLAZE_INTERNAL_ASSERT( Bq.rows() == N, "Invalid q8_0 n dimension" );
+         BLAZE_INTERNAL_ASSERT( ( K % 32UL ) == 0UL, "q8_0 K must be multiple of 32" );
+
+         const float* Aptr = A.data();
+         const size_t lda = A.spacing();
+         const q8_0::block_q8_0* Bptr = Bq.data();
+         const size_t ldb = K / 32UL;
+         float* Cptr = C.data();
+         const size_t ldc = C.spacing();
+
+         q8_0::sgemm_nt( M, N, K, 1.0f, Aptr, lda, Bptr, ldb, 0.0f, Cptr, ldc );
+         return;
+      }
+      else {
+         if( ( IsDiagonal_v<MT4> || IsDiagonal_v<MT5> ) ||
+             ( C.rows() * C.columns() < DMATTDMATMULT_THRESHOLD ) )
+            selectSmallAssignKernel( C, A, B );
+         else
+            selectBlasAssignKernel( C, A, B );
+      }
    }
    /*! \endcond */
    //**********************************************************************************************
