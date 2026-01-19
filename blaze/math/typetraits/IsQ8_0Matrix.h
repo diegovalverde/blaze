@@ -36,8 +36,18 @@ struct IsQ8_0MatrixImpl< CustomMatrix< q8_0::block_q8_0, AF, PF, SO, Tag > >
    : public TrueType
 {};
 
+template< AlignmentFlag AF, PaddingFlag PF, bool SO, typename Tag >
+struct IsQ8_0MatrixImpl< CustomMatrix< const q8_0::block_q8_0, AF, PF, SO, Tag > >
+   : public TrueType
+{};
+
 template< AlignmentFlag AF, PaddingFlag PF, bool SO, typename Tag, typename RT >
 struct IsQ8_0MatrixImpl< CustomMatrix< q8_0::block_q8_0, AF, PF, SO, Tag, RT > >
+   : public TrueType
+{};
+
+template< AlignmentFlag AF, PaddingFlag PF, bool SO, typename Tag, typename RT >
+struct IsQ8_0MatrixImpl< CustomMatrix< const q8_0::block_q8_0, AF, PF, SO, Tag, RT > >
    : public TrueType
 {};
 

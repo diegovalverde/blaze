@@ -525,15 +525,17 @@ class DMatTDMatMultExpr
          const size_t M( A.rows() );
          const size_t N( Bexpr.columns() );
          const size_t K( A.columns() );
+         const size_t blocks_per_row = Bq.spacing();
 
-         BLAZE_INTERNAL_ASSERT( Bq.columns() == K, "Invalid q8_0 k dimension" );
          BLAZE_INTERNAL_ASSERT( Bq.rows() == N, "Invalid q8_0 n dimension" );
+         BLAZE_INTERNAL_ASSERT( Bq.columns() == K, "Invalid q8_0 k dimension" );
          BLAZE_INTERNAL_ASSERT( ( K % 32UL ) == 0UL, "q8_0 K must be multiple of 32" );
+         BLAZE_INTERNAL_ASSERT( blocks_per_row * 32UL == K, "Invalid q8_0 block spacing" );
 
          const float* Aptr = A.data();
          const size_t lda = A.spacing();
          const q8_0::block_q8_0* Bptr = Bq.data();
-         const size_t ldb = K / 32UL;
+         const size_t ldb = blocks_per_row;
          float* Cptr = (*lhs).data();
          const size_t ldc = (*lhs).spacing();
 
@@ -586,15 +588,17 @@ class DMatTDMatMultExpr
          const size_t M( A.rows() );
          const size_t N( B.columns() );
          const size_t K( A.columns() );
+         const size_t blocks_per_row = Bq.spacing();
 
-         BLAZE_INTERNAL_ASSERT( Bq.columns() == K, "Invalid q8_0 k dimension" );
          BLAZE_INTERNAL_ASSERT( Bq.rows() == N, "Invalid q8_0 n dimension" );
+         BLAZE_INTERNAL_ASSERT( Bq.columns() == K, "Invalid q8_0 k dimension" );
          BLAZE_INTERNAL_ASSERT( ( K % 32UL ) == 0UL, "q8_0 K must be multiple of 32" );
+         BLAZE_INTERNAL_ASSERT( blocks_per_row * 32UL == K, "Invalid q8_0 block spacing" );
 
          const float* Aptr = A.data();
          const size_t lda = A.spacing();
          const q8_0::block_q8_0* Bptr = Bq.data();
-         const size_t ldb = K / 32UL;
+         const size_t ldb = blocks_per_row;
          float* Cptr = C.data();
          const size_t ldc = C.spacing();
 
