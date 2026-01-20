@@ -539,7 +539,11 @@ class DMatTDMatMultExpr
          float* Cptr = (*lhs).data();
          const size_t ldc = (*lhs).spacing();
 
-         q8_0::sgemm_nt( M, N, K, 1.0f, Aptr, lda, Bptr, ldb, 0.0f, Cptr, ldc );
+         if( M == 1UL ) {
+            q8_0::sgemv_nt( N, K, 1.0f, Aptr, lda, Bptr, ldb, 0.0f, Cptr, ldc );
+         } else {
+            q8_0::sgemm_nt( M, N, K, 1.0f, Aptr, lda, Bptr, ldb, 0.0f, Cptr, ldc );
+         }
          return;
       }
       else {
@@ -602,7 +606,11 @@ class DMatTDMatMultExpr
          float* Cptr = C.data();
          const size_t ldc = C.spacing();
 
-         q8_0::sgemm_nt( M, N, K, 1.0f, Aptr, lda, Bptr, ldb, 0.0f, Cptr, ldc );
+         if( M == 1UL ) {
+            q8_0::sgemv_nt( N, K, 1.0f, Aptr, lda, Bptr, ldb, 0.0f, Cptr, ldc );
+         } else {
+            q8_0::sgemm_nt( M, N, K, 1.0f, Aptr, lda, Bptr, ldb, 0.0f, Cptr, ldc );
+         }
          return;
       }
       else {

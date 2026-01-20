@@ -593,7 +593,11 @@ class DMatDMatMultExpr
       float* Cptr = C.data();
       const size_t ldc = C.spacing();
 
-      q8_0::sgemm_nt( M, N, K, 1.0f, Aptr, lda, Bptr, ldb, 0.0f, Cptr, ldc );
+      if( M == 1UL ) {
+         q8_0::sgemv_nt( N, K, 1.0f, Aptr, lda, Bptr, ldb, 0.0f, Cptr, ldc );
+      } else {
+         q8_0::sgemm_nt( M, N, K, 1.0f, Aptr, lda, Bptr, ldb, 0.0f, Cptr, ldc );
+      }
    }
 
    template< typename MT3    // Type of the left-hand side target matrix

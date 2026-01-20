@@ -125,6 +125,28 @@ inline void sgemm_nt( std::size_t m, std::size_t n, std::size_t k,
    }
 }
 
+// Row-major A (1 x k) times row-quantized B (n x k), producing C (1 x n).
+// Optimized for m=1 to reduce loop overhead in the common decode path.
+inline void sgemv_nt( std::size_t n, std::size_t k,
+                      float alpha, const float* A, std::size_t lda,
+                      const block_q8_0* B, std::size_t ldb,
+                      float beta, float* C, std::size_t ldc )
+{
+   assert( A != nullptr && B != nullptr && C != nullptr );
+   assert( ( k % 32 ) == 0 );
+   const std::size_t blocks = k / 32;
+
+   const float* arow = A;
+   float* crow = C;
+   for( std::size_t j = 0; j < n; ++j ) {
+      const block_q8_0* brow = B + j * ldb;
+      const float dot = dot_f32_q8_0( arow, brow, blocks );
+      crow[j] = alpha * dot + beta * crow[j];
+   }
+   (void)lda;
+   (void)ldc;
+}
+
 } // namespace q8_0
 } // namespace blaze
 
